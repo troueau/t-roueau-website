@@ -1,35 +1,38 @@
-import { useState, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import PhotoUpload from "@/components/PhotoUpload";
 import PhotoGallery from "@/components/PhotoGallery";
+import { listPhotos } from "@/lib/s3";
+import Footer from "@/components/Footer";
 
 const Index = () => {
-  const [photos, setPhotos] = useState<string[]>([]);
-
-  const handleUpload = useCallback((files: File[]) => {
-    const newUrls = files.map((file) => URL.createObjectURL(file));
-    setPhotos((prev) => [...newUrls, ...prev]);
-  }, []);
+  const { data: photos = [], isLoading, isError } = useQuery({
+    queryKey: ["photos"],
+    queryFn: listPhotos,
+  });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <Hero />
 
-      <div className="py-16 space-y-16">
+      <div className="py-16 space-y-16 flex-1" id="gallery">
         <div className="text-center">
-          <h2 className="text-display text-3xl md:text-4xl font-semibold text-foreground mb-2">
-            My Work
-          </h2>
+          {isLoading ? (
+            <p className="text-muted-foreground">Loading…</p>
+          ) : isError ? (
+            <p className="text-destructive">Failed to load photos.</p>
+          ) : null}
+        </div>
+
+        <PhotoGallery photos={photos} />
+
+        <div className="text-center">
           <p className="text-muted-foreground">
             {photos.length} photo{photos.length !== 1 ? "s" : ""}
           </p>
         </div>
-
-        <PhotoUpload onUpload={handleUpload} />
-        <PhotoGallery photos={photos} />
       </div>
+
+      <Footer />
     </div>
   );
 };

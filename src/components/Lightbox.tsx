@@ -1,4 +1,5 @@
 import { useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -28,18 +29,18 @@ const Lightbox = ({ images, currentIndex, onClose, onNavigate }: LightboxProps) 
     };
   }, [handleKeyDown]);
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-sm flex items-center justify-center"
+        className="fixed inset-0 z-[100] bg-background flex items-center justify-center"
         onClick={onClose}
       >
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 p-2 rounded-full bg-secondary text-foreground hover:text-primary transition-colors z-10"
+          className="absolute top-6 right-6 p-2 rounded-full bg-secondary text-foreground hover:text-primary transition-colors z-10 hidden sm:block"
         >
           <X className="w-6 h-6" />
         </button>
@@ -47,7 +48,7 @@ const Lightbox = ({ images, currentIndex, onClose, onNavigate }: LightboxProps) 
         {currentIndex > 0 && (
           <button
             onClick={(e) => { e.stopPropagation(); onNavigate(currentIndex - 1); }}
-            className="absolute left-6 p-2 rounded-full bg-secondary text-foreground hover:text-primary transition-colors z-10"
+            className="absolute left-6 p-2 rounded-full bg-secondary text-foreground hover:text-primary transition-colors z-10 hidden sm:block"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -56,7 +57,7 @@ const Lightbox = ({ images, currentIndex, onClose, onNavigate }: LightboxProps) 
         {currentIndex < images.length - 1 && (
           <button
             onClick={(e) => { e.stopPropagation(); onNavigate(currentIndex + 1); }}
-            className="absolute right-6 p-2 rounded-full bg-secondary text-foreground hover:text-primary transition-colors z-10"
+            className="absolute right-6 p-2 rounded-full bg-secondary text-foreground hover:text-primary transition-colors z-10 hidden sm:block"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -73,11 +74,12 @@ const Lightbox = ({ images, currentIndex, onClose, onNavigate }: LightboxProps) 
           onClick={(e) => e.stopPropagation()}
         />
 
-        <div className="absolute bottom-6 text-sm text-muted-foreground">
+        <div className="absolute bottom-3 text-sm text-muted-foreground">
           {currentIndex + 1} / {images.length}
         </div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

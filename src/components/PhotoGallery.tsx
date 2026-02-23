@@ -6,40 +6,44 @@ interface PhotoGalleryProps {
   photos: string[];
 }
 
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [loadedSet, setLoadedSet] = useState<Set<number>>(new Set());
 
-  if (photos.length === 0) {
-    return (
-      <div className="text-center py-20 px-6">
-        <p className="text-muted-foreground text-lg">
-          No photos yet. Upload some to get started.
-        </p>
-      </div>
-    );
-  }
+  const handleLoad = (i: number) => {
+    setLoadedSet((prev) => new Set(prev).add(i));
+  };
 
   return (
     <>
       <div
-        id="gallery"
-        className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 px-6 max-w-7xl mx-auto"
+        className="columns-2 lg:columns-3 xl:columns-4 gap-4 px-6 max-w-7xl mx-auto"
       >
         {photos.map((src, i) => (
           <motion.div
             key={src + i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: Math.min(i * 0.05, 0.5) }}
             className="mb-4 break-inside-avoid cursor-pointer group"
             onClick={() => setLightboxIndex(i)}
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: (i % 4) * 0.07 }}
+            whileHover={{ scale: 1.02 }}
           >
-            <div className="overflow-hidden rounded-lg">
-              <img
+            <div className="overflow-hidden rounded-lg bg-muted">
+              <motion.img
                 src={src}
                 alt=""
-                loading="lazy"
-                className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onLoad={() => handleLoad(i)}
+                animate={{ opacity: loadedSet.has(i) ? 1 : 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="w-full object-cover"
               />
             </div>
           </motion.div>
