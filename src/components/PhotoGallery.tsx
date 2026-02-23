@@ -36,7 +36,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
             transition={{ duration: 0.5, ease: "easeOut", delay: (i % 4) * 0.07 }}
             whileHover={{ scale: 1.02 }}
           >
-            <div className="overflow-hidden rounded-lg bg-muted">
+            <div className="overflow-hidden  bg-muted">
               <motion.img
                 src={src}
                 alt=""
