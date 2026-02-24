@@ -7,8 +7,8 @@ interface PhotoGalleryProps {
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, clipPath: "inset(100% 0% 0% 0%)" },
-  visible: { opacity: 1, clipPath: "inset(0% 0% 0% 0%)" },
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
 };
 
 const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
@@ -33,13 +33,15 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94], delay: (i % 4) * 0.08 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: (i % 4) * 0.07 }}
             whileHover={{ scale: 1.02 }}
           >
             <div className="overflow-hidden  bg-muted">
               <motion.img
                 src={src}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 onLoad={() => handleLoad(i)}
                 animate={{ opacity: loadedSet.has(i) ? 1 : 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
