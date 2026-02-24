@@ -70,7 +70,7 @@ const Lightbox = ({ images, currentIndex, onClose, onNavigate }: LightboxProps) 
           transition={{ duration: 0.3 }}
           src={images[currentIndex]}
           alt=""
-          className="max-h-[90vh] max-w-[90vw] object-contain"
+          className="max-h-[88vh] max-w-[88vw] object-contain"
           onClick={(e) => e.stopPropagation()}
         />
 
