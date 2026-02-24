@@ -63,16 +63,21 @@ const Lightbox = ({ images, currentIndex, onClose, onNavigate }: LightboxProps) 
           </button>
         )}
 
-        <motion.img
-          key={currentIndex}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          src={images[currentIndex]}
-          alt=""
-          className="max-h-[88vh] max-w-[88vw] object-contain"
-          onClick={(e) => e.stopPropagation()}
-        />
+        <div className="select-none pointer-events-none">
+          <motion.img
+            key={currentIndex}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            src={images[currentIndex]}
+            alt=""
+            className="max-h-[88vh] max-w-[88vw] object-contain"
+            onClick={(e) => e.stopPropagation()}
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+          />
+        </div>
+
 
         <div className="absolute bottom-3 text-sm text-muted-foreground">
           {currentIndex + 1} / {images.length}

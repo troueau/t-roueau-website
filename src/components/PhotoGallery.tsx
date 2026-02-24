@@ -36,7 +36,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
             transition={{ duration: 0.5, ease: "easeOut", delay: (i % 4) * 0.07 }}
             whileHover={{ scale: 1.02 }}
           >
-            <div className="overflow-hidden  bg-muted">
+            <div className="overflow-hidden bg-muted select-none pointer-events-none">
               <motion.img
                 src={src}
                 alt=""
@@ -46,6 +46,8 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
                 animate={{ opacity: loadedSet.has(i) ? 1 : 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 className="w-full object-cover"
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
               />
             </div>
           </motion.div>
