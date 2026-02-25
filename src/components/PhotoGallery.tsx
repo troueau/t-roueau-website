@@ -55,7 +55,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
       </div>
       <div
         id="gallery"
-        className="columns-2 lg:columns-3 xl:columns-4 gap-4 px-6 max-w-7xl mx-auto scroll-mt-20">
+        className="columns-2 lg:columns-3 xl:columns-4 gap-5 px-6 max-w-8xl mx-auto scroll-mt-20">
         {photos.map((src, i) => (
           <motion.div
             key={src + i}
