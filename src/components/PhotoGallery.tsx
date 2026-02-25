@@ -43,7 +43,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
           onLoad={() => handleLoad(HERO_INDEX)}
           animate={{ opacity: loadedSet.has(HERO_INDEX) ? 1 : 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="w-9/12 object-contain cursor-pointer mx-auto border-white border-4"
+          className="w-full md:w-9/12 object-contain cursor-pointer mx-auto border-white border-4"
           onContextMenu={(e) => e.preventDefault()}
           onDragStart={(e) => e.preventDefault()}
           fetchPriority="high"
