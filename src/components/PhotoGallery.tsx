@@ -15,6 +15,10 @@ const HERO_PHOTO =
   "https://ddrrqia38iv2z.cloudfront.net/B332122-R1-32-14A.webp";
 const HERO_INDEX = -1;
 
+function resized(url: string, suffix: "-800w" | "-1600w"): string {
+  return url.replace(/\.webp$/, `${suffix}.webp`);
+}
+
 const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [loadedSet, setLoadedSet] = useState<Set<number>>(new Set());
@@ -27,9 +31,11 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-6 mb-12">
+      <div className="max-w-7xl mx-auto px-6">
         <motion.img
-          src={HERO_PHOTO}
+          src={resized(HERO_PHOTO, "-1600w")}
+          srcSet={`${resized(HERO_PHOTO, "-1600w")} 1600w, ${HERO_PHOTO} 7728w`}
+          sizes="(max-width: 1280px) 83vw, 1067px"
           onClick={() => setLightboxIndex(0)}
           alt=""
           loading="eager"
@@ -37,9 +43,10 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
           onLoad={() => handleLoad(HERO_INDEX)}
           animate={{ opacity: loadedSet.has(HERO_INDEX) ? 1 : 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="w-10/12 object-contain cursor-pointer mx-auto border-white border-4"
+          className="w-9/12 object-contain cursor-pointer mx-auto border-white border-4"
           onContextMenu={(e) => e.preventDefault()}
           onDragStart={(e) => e.preventDefault()}
+          fetchPriority="high"
         />
       </div>
       <div
@@ -62,7 +69,9 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
             whileHover={{ scale: 1.02 }}>
             <div className="overflow-hidden bg-muted select-none pointer-events-none">
               <motion.img
-                src={src}
+                src={resized(src, "-800w")}
+                srcSet={`${resized(src, "-800w")} 800w, ${resized(src, "-1600w")} 1600w`}
+                sizes="(max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 308px"
                 alt=""
                 loading="lazy"
                 decoding="async"

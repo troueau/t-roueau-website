@@ -6,13 +6,15 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   const {
-    data: photos = [],
+    data: allFiles = [],
     isLoading,
     isError,
   } = useQuery({
     queryKey: ["photos"],
     queryFn: listPhotos,
   });
+
+  const photos = allFiles.filter((url) => !/-\d+w\.webp$/.test(url));
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
