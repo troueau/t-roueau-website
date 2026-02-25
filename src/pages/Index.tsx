@@ -5,11 +5,7 @@ import { listPhotos } from "@/lib/s3";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  const {
-    data: allFiles = [],
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: allFiles = [], isError } = useQuery({
     queryKey: ["photos"],
     queryFn: listPhotos,
   });
@@ -22,9 +18,7 @@ const Index = () => {
 
       <div className="pt-14 pb-16 space-y-16 flex-1">
         <div className="text-center">
-          {isLoading ? (
-            <p className="text-muted-foreground">Loading…</p>
-          ) : isError ? (
+          {isError ? (
             <p className="text-destructive">Failed to load photos.</p>
           ) : null}
         </div>

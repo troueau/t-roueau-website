@@ -16,7 +16,7 @@ const HERO_PHOTO =
 const HERO_INDEX = -1;
 
 function resized(url: string, suffix: "-800w" | "-1600w"): string {
-  return url.replace(/\.webp$/, `${suffix}.webp`);
+  return url.replace(/\.webp$/, `${suffix}.webp`).replace(/ /g, "%20");
 }
 
 const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
@@ -32,23 +32,26 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
   return (
     <>
       <div className="max-w-7xl mx-auto px-6 pt-8 pb-11">
-        <motion.img
-          src={resized(HERO_PHOTO, "-1600w")}
-          srcSet={`${resized(HERO_PHOTO, "-1600w")} 1600w, ${HERO_PHOTO} 7728w`}
-          sizes="(max-width: 1280px) 83vw, 1067px"
-          onClick={() => setLightboxIndex(0)}
-          alt=""
-          loading="eager"
-          decoding="sync"
-          onLoad={() => handleLoad(HERO_INDEX)}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: loadedSet.has(HERO_INDEX) ? 1 : 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="w-full md:w-8/12 object-contain cursor-pointer mx-auto border-white border-4"
-          onContextMenu={(e) => e.preventDefault()}
-          onDragStart={(e) => e.preventDefault()}
-          fetchPriority="high"
-        />
+          className="w-full md:w-8/12 mx-auto">
+          <img
+            src={resized(HERO_PHOTO, "-1600w")}
+            srcSet={`${resized(HERO_PHOTO, "-1600w")} 1600w, ${HERO_PHOTO} 7728w`}
+            sizes="(max-width: 1280px) 83vw, 1067px"
+            onClick={() => setLightboxIndex(0)}
+            alt=""
+            loading="eager"
+            decoding="sync"
+            onLoad={() => handleLoad(HERO_INDEX)}
+            className="w-full object-contain cursor-pointer border-white border-4"
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+            fetchPriority="high"
+          />
+        </motion.div>
       </div>
       <div
         id="gallery"
