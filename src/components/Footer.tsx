@@ -4,10 +4,10 @@ const Footer = () => {
   });
 
   return (
-    <div className="flex justify-center px-6 pb-4 text-right text-sm text-muted-foreground">
+    <div className="flex justify-center px-6 pb-4 text-xs text-muted-foreground">
       <p>© copyright {currentYear} - Tom Rousseau</p>
     </div>
   );
-}
+};
 
 export default Footer;

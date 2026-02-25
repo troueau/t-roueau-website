@@ -20,7 +20,7 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <div className="py-16 space-y-16 flex-1">
+      <div className="pt-14 pb-16 space-y-16 flex-1">
         <div className="text-center">
           {isLoading ? (
             <p className="text-muted-foreground">Loading…</p>

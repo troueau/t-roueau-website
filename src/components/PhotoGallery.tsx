@@ -31,7 +31,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6 pt-8 pb-11">
         <motion.img
           src={resized(HERO_PHOTO, "-1600w")}
           srcSet={`${resized(HERO_PHOTO, "-1600w")} 1600w, ${HERO_PHOTO} 7728w`}
@@ -39,11 +39,12 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
           onClick={() => setLightboxIndex(0)}
           alt=""
           loading="eager"
-          decoding="async"
+          decoding="sync"
           onLoad={() => handleLoad(HERO_INDEX)}
+          initial={{ opacity: 0 }}
           animate={{ opacity: loadedSet.has(HERO_INDEX) ? 1 : 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="w-full md:w-9/12 object-contain cursor-pointer mx-auto border-white border-4"
+          className="w-full md:w-8/12 object-contain cursor-pointer mx-auto border-white border-4"
           onContextMenu={(e) => e.preventDefault()}
           onDragStart={(e) => e.preventDefault()}
           fetchPriority="high"
