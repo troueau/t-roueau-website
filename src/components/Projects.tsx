@@ -1,20 +1,26 @@
 import { ExternalLink } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
+import { TranslationKey } from "@/lib/i18n";
 
-const projects = [
+const projectList: {
+  title: string;
+  url: string;
+  descriptionKey: TranslationKey;
+}[] = [
   {
     title: "Flavie Herbreteau",
     url: "https://flavieherbreteau.com",
-    description: "Website of Flavie Herbreteau.",
+    descriptionKey: "projects.flavie.description",
   },
   {
     title: "Shana Herbreteau",
     url: "https://shanaherbreteau.com",
-    description: "Website of Shana Herbreteau.",
+    descriptionKey: "projects.shana.description",
   },
   {
     title: "Martin Adeline",
     url: "https://martinadeline.com",
-    description: "Website of Martin Adeline.",
+    descriptionKey: "projects.martin.description",
   },
 ];
 
@@ -32,7 +38,7 @@ const ProjectCard = ({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition-all duration-300 card-shadow hover:glow-shadow">
+      className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition duration-300 card-shadow hover:glow-shadow">
       <div className="relative w-full h-44 overflow-hidden bg-muted">
         <div
           style={{
@@ -64,7 +70,9 @@ const ProjectCard = ({
           <span className="text-lg text-foreground group-hover:text-primary transition-colors leading-tight">
             {title}
           </span>
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+            {description}
+          </p>
           <p className="text-xs text-primary/60 mt-2 truncate">
             {url.replace("https://", "")}
           </p>
@@ -76,17 +84,24 @@ const ProjectCard = ({
 };
 
 const Projects = () => {
+  const { t } = useLanguage();
+
   return (
-    <section id="projects" className="max-w-6xl mx-auto px-6">
+    <section id="projects" className="w-full max-w-6xl mx-auto px-6">
       <span className="flex justify-center font-semibold text-3xl text-center mb-2 text-foreground">
-        Projects
+        {t("projects.title")}
       </span>
       <p className="text-center text-muted-foreground text-sm mb-20">
-        A selection of recent projects I've worked on.
+        {t("projects.subtitle")}
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-20">
-        {projects.map((project) => (
-          <ProjectCard key={project.url} {...project} />
+        {projectList.map((project) => (
+          <ProjectCard
+            key={project.url}
+            title={project.title}
+            url={project.url}
+            description={t(project.descriptionKey)}
+          />
         ))}
       </div>
     </section>
