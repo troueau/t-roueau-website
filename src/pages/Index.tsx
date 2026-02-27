@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Arrow from "@/components/Arrow";
 import { useLanguage } from "@/hooks/useLanguage";
 import { TranslationKey } from "@/lib/i18n";
 
@@ -34,38 +35,34 @@ const Index = () => {
       <Header hideNav />
 
       <div className="flex-1 flex items-center justify-center px-6 pt-12 sm:pt-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-2xl">
-          {cardKeys.map(({ href, titleKey, descriptionKey, labelKey, delay }) => (
-            <a
-              key={href}
-              href={href}
-              style={{ animationDelay: `${delay}ms` }}
-              className="group flex flex-col gap-3 p-8 rounded-lg border border-border bg-card hover:border-primary/40 hover:bg-accent/20 transition-all duration-300 animate-fade-in opacity-0">
-              <span className="text-2xl font-semibold text-foreground">
-                {t(titleKey)}
-              </span>
-              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                {t(descriptionKey)}
-              </p>
-              <span className="mt-2 text-sm font-medium text-primary inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-200">
-                {t(labelKey)}
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 13 13"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M1 6.5h11M7 1.5l5 5-5 5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </a>
-          ))}
+        <div className="w-full max-w-2xl">
+          {cardKeys.map(
+            ({ href, titleKey, descriptionKey, labelKey, delay }, i) => (
+              <a
+                key={href}
+                href={href}
+                style={{ animationDelay: `${delay}ms` }}
+                className="group block py-8 border-t border-border/50 last:border-b animate-fade-in opacity-0 bg-background rounded-lg">
+                <div className="flex items-start justify-between gap-4">
+                  <span className="text-xl sm:text-6xl font-semibold text-foreground group-hover:text-primary transition-colors duration-500 leading-none tracking-tight">
+                    {t(titleKey)}
+                  </span>
+                  <div className="flex flex-col items-end gap-3 shrink-0 pt-1">
+                    <span className="text-xs text-muted-foreground/30 font-mono tracking-widest">
+                      0{i + 1}
+                    </span>
+                    <span className="text-sm font-medium text-primary inline-flex items-center gap-1.5 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:gap-2.5 transition-all duration-300">
+                      {t(labelKey)}
+                      <Arrow />
+                    </span>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground sm:mt-4 leading-relaxed">
+                  {t(descriptionKey)}
+                </p>
+              </a>
+            ),
+          )}
         </div>
       </div>
 
