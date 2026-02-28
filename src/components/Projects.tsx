@@ -107,14 +107,14 @@ const Projects = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="projects" className="w-full max-w-6xl mx-auto px-6">
+    <section id="projects" className="w-full max-w-7xl mx-auto px-6">
       <span className="flex justify-center font-semibold text-3xl text-center mb-2 text-foreground">
         {t("projects.title")}
       </span>
       <p className="text-center text-muted-foreground text-sm mb-20 line-clamp-1">
         {t("projects.subtitle")}
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20">
         {projectList.map((project) => (
           <ProjectCard
             key={project.url}
