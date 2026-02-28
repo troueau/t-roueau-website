@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import Arrow from "@/components/Arrow";
 import { useLanguage } from "@/hooks/useLanguage";
 import { TranslationKey } from "@/lib/i18n";
+import DecorativeLine from "@/components/DecorativeLine";
 
 const cardKeys: {
   href: string;
@@ -34,17 +35,19 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header hideNav />
 
+      <DecorativeLine />
+
       <div className="flex-1 flex items-center justify-center px-6 pt-12 sm:pt-8">
-        <div className="w-full max-w-2xl">
+        <div className="w-full">
           {cardKeys.map(
             ({ href, titleKey, descriptionKey, labelKey, delay }, i) => (
               <a
                 key={href}
                 href={href}
                 style={{ animationDelay: `${delay}ms` }}
-                className="group block py-8 border-t border-border/50 last:border-b animate-fade-in opacity-0 bg-background rounded-lg">
+                className="group block py-8 border-t border-border/50 last:border-b animate-fade-in opacity-0 bg-background">
                 <div className="flex items-start justify-between gap-4">
-                  <span className="text-xl sm:text-6xl font-semibold text-foreground group-hover:text-primary transition-colors duration-500 leading-none tracking-tight">
+                  <span className="text-xl sm:text-5xl font-semibold text-foreground group-hover:text-primary transition-colors duration-500 leading-none tracking-tight">
                     {t(titleKey)}
                   </span>
                   <div className="flex flex-col items-end gap-3 shrink-0 pt-1">

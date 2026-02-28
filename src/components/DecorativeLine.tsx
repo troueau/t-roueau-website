@@ -8,7 +8,7 @@ const DecorativeLine = () => (
     preserveAspectRatio="none"
     aria-hidden="true">
     <motion.path
-      d="M -1 14 C 6 15, 34 34, 40 38 C 46 42, 55 63, 62 68 C 69 73, 94 89, 101 95"
+      d="M-1 90 C10.09 121.63, 86.09 -10, 101 22"
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -20,9 +20,9 @@ const DecorativeLine = () => (
       initial={{ pathLength: 0 }}
       animate={{ pathLength: 1 }}
       transition={{
-        duration: 4,
+        duration: 3,
         ease: [0.4, 0, 0.2, 1],
-        delay: 0.8,
+        delay: 0.5,
       }}
     />
   </svg>

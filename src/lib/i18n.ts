@@ -18,10 +18,11 @@ export const translations = {
 
     // Projects page
     "projects.title": "Projects",
-    "projects.subtitle": "A selection of recent projects I've worked on.",
+    "projects.subtitle": "A selection of recent projects.",
     "projects.flavie.description": "Website of Flavie Herbreteau.",
     "projects.shana.description": "Website of Shana Herbreteau.",
     "projects.martin.description": "Website of Martin Adeline.",
+    "projects.github.description": "My Github profile.",
   },
   fr: {
     // Header nav
@@ -38,11 +39,11 @@ export const translations = {
 
     // Projects page
     "projects.title": "Projets",
-    "projects.subtitle":
-      "Une sélection de projets récents sur lesquels j'ai travaillé.",
+    "projects.subtitle": "Une sélection de projets récents.",
     "projects.flavie.description": "Site de Flavie Herbreteau.",
     "projects.shana.description": "Site de Shana Herbreteau.",
     "projects.martin.description": "Site de Martin Adeline.",
+    "projects.github.description": "Mon profil Github.",
   },
 } satisfies Record<Language, Record<string, string>>;
 
