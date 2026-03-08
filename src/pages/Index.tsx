@@ -26,6 +26,13 @@ const cardKeys: {
     labelKey: "index.photos.label",
     delay: 120,
   },
+  {
+    href: "/about",
+    titleKey: "index.about.title",
+    descriptionKey: "index.about.description",
+    labelKey: "index.about.label",
+    delay: 240,
+  },
 ];
 
 const Index = () => {
@@ -37,7 +44,7 @@ const Index = () => {
 
       <DecorativeLine />
 
-      <div className="flex-1 flex items-center justify-center px-6 pt-12 sm:pt-8">
+      <div className="flex-1 flex items-center justify-center px-6 pt-16 sm:pt-14">
         <div className="w-full">
           {cardKeys.map(
             ({ href, titleKey, descriptionKey, labelKey, delay }, i) => (
@@ -45,8 +52,8 @@ const Index = () => {
                 key={href}
                 href={href}
                 style={{ animationDelay: `${delay}ms` }}
-                className="group block py-8 border-t border-border/50 last:border-b animate-fade-in opacity-0 bg-background">
-                <div className="flex items-start justify-between gap-4">
+                className="group block py-6 sm:py-8 border-t border-border/50 last:border-b animate-fade-in opacity-0 bg-background">
+                <div className="flex items-start justify-between gap-4 pb-2">
                   <span className="text-xl sm:text-5xl font-semibold text-foreground group-hover:text-primary transition-colors duration-500 leading-none tracking-tight">
                     {t(titleKey)}
                   </span>
@@ -54,15 +61,17 @@ const Index = () => {
                     <span className="text-xs text-muted-foreground/30 font-mono tracking-widest">
                       0{i + 1}
                     </span>
-                    <span className="text-sm font-medium text-primary inline-flex items-center gap-1.5 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:gap-2.5 transition-all duration-300">
-                      {t(labelKey)}
-                      <Arrow />
-                    </span>
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground sm:mt-4 leading-relaxed">
                   {t(descriptionKey)}
                 </p>
+                <div className="flex justify-end pt-4 sm:pt-0">
+                  <span className="text-sm font-medium text-primary inline-flex items-end gap-1.5 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:gap-2.5 [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-x-0 [@media(hover:none)]:gap-2.5 transition-all duration-300">
+                    {t(labelKey)}
+                    <Arrow />
+                  </span>
+                </div>
               </a>
             ),
           )}

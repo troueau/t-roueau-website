@@ -15,7 +15,7 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Header showProjects />
+      <Header showProjects showAbout />
 
       <div className="pt-14 pb-16 space-y-16 flex-1">
         <div className="text-center">

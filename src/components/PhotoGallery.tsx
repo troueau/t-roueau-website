@@ -46,7 +46,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
             loading="eager"
             decoding="sync"
             onLoad={() => handleLoad(HERO_INDEX)}
-            className="w-full object-contain cursor-pointer border-white border-4"
+            className="w-full object-contain cursor-pointer border-current border-4"
             onContextMenu={(e) => e.preventDefault()}
             onDragStart={(e) => e.preventDefault()}
             fetchPriority="high"

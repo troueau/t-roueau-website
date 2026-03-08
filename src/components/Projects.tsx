@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
 import { useLanguage } from "@/hooks/useLanguage";
 import { TranslationKey } from "@/lib/i18n";
 
@@ -77,7 +78,7 @@ const ProjectCard = ({
             />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/40 pointer-events-none" />
         <div className="absolute inset-0 bg-background/0 group-hover:bg-background/10 transition-colors duration-300 pointer-events-none" />
         <div
           className="absolute inset-0"
@@ -90,7 +91,7 @@ const ProjectCard = ({
           <span className="text-lg text-foreground group-hover:text-primary transition-colors leading-tight">
             {title}
           </span>
-          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+          <p className="text-sm text-muted-foreground mt-1 line-clamp-2 h-10">
             {description}
           </p>
           <p className="text-xs text-primary/60 mt-2 truncate">
@@ -115,13 +116,19 @@ const Projects = () => {
         {t("projects.subtitle")}
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20">
-        {projectList.map((project) => (
-          <ProjectCard
+        {projectList.map((project, i) => (
+          <motion.div
             key={project.url}
-            title={project.title}
-            url={project.url}
-            description={t(project.descriptionKey)}
-          />
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.1 }}>
+            <ProjectCard
+              title={project.title}
+              url={project.url}
+              description={t(project.descriptionKey)}
+            />
+          </motion.div>
         ))}
       </div>
     </section>

@@ -5,6 +5,7 @@ export const translations = {
     // Header nav
     "header.projects": "Projects",
     "header.photos": "Photos",
+    "header.about": "About",
 
     // Index cards
     "index.projects.title": "Projects",
@@ -15,6 +16,9 @@ export const translations = {
     "index.photos.description":
       "A collection of moments captured along the way.",
     "index.photos.label": "Browse photos gallery",
+    "index.about.title": "About",
+    "index.about.description": "A few words about who I am.",
+    "index.about.label": "Learn more",
 
     // Projects page
     "projects.title": "Projects",
@@ -23,11 +27,23 @@ export const translations = {
     "projects.shana.description": "Website of Shana Herbreteau.",
     "projects.martin.description": "Website of Martin Adeline.",
     "projects.github.description": "My Github profile.",
+
+    // About page
+    "about.title": "About",
+    "about.p1":
+      "I create simple, refined digital experiences, with close attention to detail and aesthetics.",
+    "about.p2":
+      "Passionate about photography, I love capturing moments and telling stories through images.",
+    "about.p3":
+      "I always strive to build things that are useful, beautiful, and well thought out.",
+    "about.age.label": "years old",
+    "about.contact.label": "Contact",
   },
   fr: {
     // Header nav
     "header.projects": "Projets",
     "header.photos": "Photos",
+    "header.about": "À propos",
 
     // Index cards
     "index.projects.title": "Projets",
@@ -36,6 +52,9 @@ export const translations = {
     "index.photos.title": "Photos",
     "index.photos.description": "Une collection de moments capturés en chemin.",
     "index.photos.label": "Voir la galerie photos",
+    "index.about.title": "À propos",
+    "index.about.description": "Quelques mots sur qui je suis.",
+    "index.about.label": "En savoir plus",
 
     // Projects page
     "projects.title": "Projets",
@@ -44,6 +63,17 @@ export const translations = {
     "projects.shana.description": "Site de Shana Herbreteau.",
     "projects.martin.description": "Site de Martin Adeline.",
     "projects.github.description": "Mon profil Github.",
+
+    // About page
+    "about.title": "À propos",
+    "about.p1":
+      "Je crée des expériences numériques simples et soignées, avec une attention particulière portée aux détails et à l'esthétique.",
+    "about.p2":
+      "Passionné de photographie, j'aime capturer des moments et raconter des histoires à travers l'image.",
+    "about.p3":
+      "Je cherche toujours à créer des projets utiles, beaux et bien pensés.",
+    "about.age.label": "ans",
+    "about.contact.label": "Contact",
   },
 } satisfies Record<Language, Record<string, string>>;
 
