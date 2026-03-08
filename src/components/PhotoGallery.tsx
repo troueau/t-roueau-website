@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Lightbox from "./Lightbox";
 
@@ -22,6 +22,18 @@ function resized(url: string, suffix: "-800w" | "-1600w"): string {
 const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [loadedSet, setLoadedSet] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = resized(HERO_PHOTO, "-1600w");
+    link.setAttribute("imagesrcset", `${resized(HERO_PHOTO, "-1600w")} 1600w, ${HERO_PHOTO} 7728w`);
+    link.setAttribute("imagesizes", "(max-width: 1280px) 83vw, 1067px");
+    link.setAttribute("fetchpriority", "high");
+    document.head.appendChild(link);
+    return () => { document.head.removeChild(link); };
+  }, []);
 
   const allPhotos = [HERO_PHOTO, ...photos];
 

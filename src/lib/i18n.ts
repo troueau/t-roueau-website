@@ -8,6 +8,10 @@ export const translations = {
     "header.about": "About",
 
     // Index cards
+    "index.hero.title": "Hello.",
+    "index.hero.name": "Tom Rousseau",
+    "index.hero.subtitle":
+      "I build things for the web and take photos. Scroll to explore.",
     "index.projects.title": "Projects",
     "index.projects.description":
       "Side projects, experiments & things I built.",
@@ -46,6 +50,10 @@ export const translations = {
     "header.about": "À propos",
 
     // Index cards
+    "index.hero.title": "Bonjour.",
+    "index.hero.name": "Tom Rousseau",
+    "index.hero.subtitle":
+      "Je crée des choses pour le web et je prends des photos. Défilez pour explorer.",
     "index.projects.title": "Projets",
     "index.projects.description": "Projets perso, expériences & créations.",
     "index.projects.label": "Voir les projets",

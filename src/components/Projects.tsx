@@ -7,21 +7,28 @@ const projectList: {
   title: string;
   url: string;
   descriptionKey: TranslationKey;
+  screenshot?: string;
 }[] = [
   {
     title: "Flavie Herbreteau",
     url: "https://flavieherbreteau.com",
     descriptionKey: "projects.flavie.description",
+    screenshot:
+      "https://ddrrqia38iv2z.cloudfront.net/flavie-website-screenshot.webp",
   },
   {
     title: "Shana Herbreteau",
     url: "https://shanaherbreteau.com",
     descriptionKey: "projects.shana.description",
+    screenshot:
+      "https://ddrrqia38iv2z.cloudfront.net/shana-website-screenshot.webp",
   },
   {
     title: "Martin Adeline",
     url: "https://martinadeline.com",
     descriptionKey: "projects.martin.description",
+    screenshot:
+      "https://ddrrqia38iv2z.cloudfront.net/martin-website-screenshot.webp",
   },
   {
     title: "Github",
@@ -34,10 +41,12 @@ const ProjectCard = ({
   title,
   url,
   description,
+  screenshot,
 }: {
   title: string;
   url: string;
   description: string;
+  screenshot?: string;
 }) => {
   return (
     <a
@@ -45,7 +54,7 @@ const ProjectCard = ({
       target="_blank"
       rel="noopener noreferrer"
       className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition duration-300 card-shadow hover:glow-shadow">
-      <div className="relative w-full h-44 overflow-hidden bg-muted">
+      <div className="relative w-full aspect-[8/5] overflow-hidden bg-muted">
         {url.includes("github.com") ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <svg
@@ -60,23 +69,12 @@ const ProjectCard = ({
             </svg>
           </div>
         ) : (
-          <div
-            style={{
-              width: "400%",
-              height: "400%",
-              transform: "scale(0.25)",
-              transformOrigin: "top left",
-            }}>
-            <iframe
-              src={url}
-              title={`Aperçu de ${title}`}
-              loading="lazy"
-              tabIndex={-1}
-              aria-hidden="true"
-              className="absolute top-0 left-0 w-full h-full border-0 pointer-events-none"
-              sandbox="allow-same-origin"
-            />
-          </div>
+          <img
+            src={screenshot}
+            alt={`Aperçu de ${title}`}
+            loading="lazy"
+            className="w-full h-full object-cover"
+          />
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/40 pointer-events-none" />
         <div className="absolute inset-0 bg-background/0 group-hover:bg-background/10 transition-colors duration-300 pointer-events-none" />
@@ -127,6 +125,7 @@ const Projects = () => {
               title={project.title}
               url={project.url}
               description={t(project.descriptionKey)}
+              screenshot={project.screenshot}
             />
           </motion.div>
         ))}
