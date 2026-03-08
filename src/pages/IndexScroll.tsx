@@ -32,14 +32,13 @@ const sections = [
 
 const AnimatedTitle = ({ text }: { text: string }) => {
   return (
-    <span aria-label={text} className="inline-flex flex-wrap">
+    <span aria-label={text}>
       {text.split("").map((char, i) => (
         <motion.span
           key={i}
-          className="inline-block"
-          style={{ whiteSpace: char === " " ? "pre" : "normal" }}
-          initial={{ opacity: 0, y: 40, rotateX: -60 }}
-          whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+          style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : "normal" }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{
             duration: 0.5,
@@ -107,6 +106,7 @@ const Section = ({
   label,
   number,
   sectionRef,
+  isLast,
 }: {
   href: string;
   title: string;
@@ -114,11 +114,12 @@ const Section = ({
   label: string;
   number: string;
   sectionRef: (el: HTMLElement | null) => void;
+  isLast?: boolean;
 }) => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen flex items-center px-8 sm:px-16 overflow-hidden border-b border-border/30 scroll-snap-start">
+      className={`relative h-screen flex items-center px-8 sm:px-16 overflow-hidden scroll-snap-start${isLast ? "" : " border-b border-border/30"}`}>
       <motion.span
         className="absolute right-8 sm:right-16 top-1/2 -translate-y-1/2 select-none pointer-events-none font-semibold leading-none text-[20vw] text-foreground/[0.03]"
         initial={{ opacity: 0, x: 60 }}
@@ -259,6 +260,7 @@ const IndexScroll = () => {
           description={t(s.descriptionKey)}
           label={t(s.labelKey)}
           number={s.number}
+          isLast={i === sections.length - 1}
           sectionRef={(el) => {
             sectionRefs.current[i] = el;
           }}

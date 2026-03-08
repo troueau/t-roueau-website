@@ -50,7 +50,7 @@ export const translations = {
     "header.about": "À propos",
 
     // Index cards
-    "index.hero.title": "Bonjour.",
+    "index.hero.title": "Hello.",
     "index.hero.name": "Tom Rousseau",
     "index.hero.subtitle":
       "Je crée des choses pour le web et je prends des photos. Défilez pour explorer.",
