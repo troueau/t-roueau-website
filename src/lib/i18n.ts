@@ -40,8 +40,8 @@ export const translations = {
       "Passionate about photography, I love capturing moments and telling stories through images.",
     "about.p3":
       "I always strive to build things that are useful, beautiful, and well thought out.",
-    "about.age.label": "years old",
-    "about.contact.label": "Contact",
+    "about.job.label": "Front-end Developer",
+    "about.based.label": "Based in Paris",
   },
   fr: {
     // Header nav
@@ -80,8 +80,8 @@ export const translations = {
       "Passionné de photographie, j'aime capturer des moments et raconter des histoires à travers l'image.",
     "about.p3":
       "Je cherche toujours à créer des projets utiles, beaux et bien pensés.",
-    "about.age.label": "ans",
-    "about.contact.label": "Contact",
+    "about.job.label": "Développeur front-end",
+    "about.based.label": "Basé à Paris",
   },
 } satisfies Record<Language, Record<string, string>>;
 

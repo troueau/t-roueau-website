@@ -68,7 +68,6 @@ const Header = ({
           </nav>
         )}
         <div className="flex items-center gap-2">
-          {/* Desktop: boutons séparés */}
           <button
             onClick={toggleTheme}
             className="hidden sm:flex px-2 py-1 items-center justify-center text-xs font-semibold text-muted-foreground hover:text-foreground border border-border rounded transition-colors"
@@ -85,7 +84,6 @@ const Header = ({
             {language === "en" ? "FR" : "EN"}
           </button>
 
-          {/* Mobile: bouton dropdown */}
           <div className="relative sm:hidden" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen((o) => !o)}
@@ -95,6 +93,14 @@ const Header = ({
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 flex flex-col gap-1 bg-background border border-border rounded shadow-md p-2 min-w-[80px]">
+                <button
+                  onClick={() => {
+                    toggleLanguage();
+                    setDropdownOpen(false);
+                  }}
+                  className="flex items-center gap-2 px-2 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors border-b border-border pb-2">
+                  {language === "en" ? "FR" : "EN"}
+                </button>
                 <button
                   onClick={() => {
                     toggleTheme();
@@ -107,14 +113,6 @@ const Header = ({
                     <LucideMoon size={14} />
                   )}
                   {theme === "dark" ? "Light" : "Dark"}
-                </button>
-                <button
-                  onClick={() => {
-                    toggleLanguage();
-                    setDropdownOpen(false);
-                  }}
-                  className="flex items-center gap-2 px-2 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground rounded transition-colors">
-                  {language === "en" ? "FR" : "EN"}
                 </button>
               </div>
             )}

@@ -39,27 +39,16 @@ const projectList: {
 
 const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 32 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: EASE, delay: i * 0.1 },
-  }),
-};
-
 const ProjectCard = ({
   title,
   url,
   description,
   screenshot,
-  index,
 }: {
   title: string;
   url: string;
   description: string;
   screenshot?: string;
-  index: number;
 }) => {
   return (
     <motion.a
@@ -67,12 +56,11 @@ const ProjectCard = ({
       target="_blank"
       rel="noopener noreferrer"
       className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition duration-300 card-shadow hover:glow-shadow"
-      variants={cardVariants}
-      custom={index}
-      initial="hidden"
-      whileInView="visible"
-      whileTap={{ scale: 0.97 }}
-      viewport={{ once: true, margin: "-40px" }}>
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileTap={{ scale: 0.97 }}>
       <div className="relative w-full aspect-[8/5] overflow-hidden bg-muted">
         {url.includes("github.com") ? (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -164,14 +152,13 @@ const Projects = () => {
         </motion.p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20">
-        {projectList.map((project, i) => (
+        {projectList.map((project) => (
           <ProjectCard
             key={project.url}
             title={project.title}
             url={project.url}
             description={t(project.descriptionKey)}
             screenshot={project.screenshot}
-            index={i}
           />
         ))}
       </div>

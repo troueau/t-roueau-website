@@ -119,7 +119,7 @@ const Section = ({
   return (
     <section
       ref={sectionRef}
-      className={`relative h-screen flex items-center px-8 sm:px-16 overflow-hidden scroll-snap-start${isLast ? "" : " border-b border-border/30"}`}>
+      className={`relative py-24 sm:py-32 flex items-center px-8 sm:px-16 overflow-hidden${isLast ? "" : " border-b border-border/30"}`}>
       <motion.span
         className="absolute right-8 sm:right-16 top-1/2 -translate-y-1/2 select-none pointer-events-none font-semibold leading-none text-[20vw] text-foreground/[0.03]"
         initial={{ opacity: 0, x: 60 }}
@@ -208,7 +208,7 @@ const IndexScroll = () => {
   };
 
   return (
-    <div className="bg-background" style={{ scrollSnapType: "y mandatory" }}>
+    <div className="bg-background">
       <ScrollProgress />
       <Header hideNav />
 
@@ -220,8 +220,7 @@ const IndexScroll = () => {
 
       <section
         ref={heroRef}
-        className="relative h-screen flex flex-col justify-center px-8 sm:px-16 overflow-hidden"
-        style={{ scrollSnapAlign: "start" }}>
+        className="relative h-screen flex flex-col justify-center px-8 sm:px-16 overflow-hidden">
         <p className="text-[13vw] sm:text-[9vw] font-semibold leading-none tracking-tight text-foreground mb-8 overflow-visible">
           {heroAnimationDone
             ? t("index.hero.title")
