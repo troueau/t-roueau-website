@@ -37,23 +37,42 @@ const projectList: {
   },
 ];
 
+const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: EASE, delay: i * 0.1 },
+  }),
+};
+
 const ProjectCard = ({
   title,
   url,
   description,
   screenshot,
+  index,
 }: {
   title: string;
   url: string;
   description: string;
   screenshot?: string;
+  index: number;
 }) => {
   return (
-    <a
+    <motion.a
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition duration-300 card-shadow hover:glow-shadow">
+      className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition duration-300 card-shadow hover:glow-shadow"
+      variants={cardVariants}
+      custom={index}
+      initial="hidden"
+      whileInView="visible"
+      whileTap={{ scale: 0.97 }}
+      viewport={{ once: true, margin: "-40px" }}>
       <div className="relative w-full aspect-[8/5] overflow-hidden bg-muted">
         {url.includes("github.com") ? (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -77,7 +96,6 @@ const ProjectCard = ({
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/40 pointer-events-none" />
-        <div className="absolute inset-0 bg-background/0 group-hover:bg-background/10 transition-colors duration-300 pointer-events-none" />
         <div
           className="absolute inset-0"
           style={{ touchAction: "none", pointerEvents: "auto" }}
@@ -86,7 +104,7 @@ const ProjectCard = ({
 
       <div className="p-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <span className="text-lg text-foreground group-hover:text-primary transition-colors leading-tight">
+          <span className="text-lg text-foreground leading-tight">
             {title}
           </span>
           <p className="text-sm text-muted-foreground mt-1 line-clamp-2 h-10">
@@ -96,10 +114,28 @@ const ProjectCard = ({
             {url.replace("https://", "")}
           </p>
         </div>
-        <ExternalLink className="shrink-0 w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors mt-1" />
+        <ExternalLink className="shrink-0 w-4 h-4 text-muted-foreground mt-1" />
       </div>
-    </a>
+    </motion.a>
   );
+};
+
+const titleVariants = {
+  hidden: { clipPath: "inset(0 0 100% 0)", opacity: 0 },
+  visible: {
+    clipPath: "inset(0 0 0% 0)",
+    opacity: 1,
+    transition: { duration: 0.6, ease: EASE },
+  },
+};
+
+const subtitleVariants = {
+  hidden: { clipPath: "inset(0 0 100% 0)", opacity: 0 },
+  visible: {
+    clipPath: "inset(0 0 0% 0)",
+    opacity: 1,
+    transition: { duration: 0.6, ease: EASE, delay: 0.1 },
+  },
 };
 
 const Projects = () => {
@@ -107,27 +143,36 @@ const Projects = () => {
 
   return (
     <section id="projects" className="w-full max-w-7xl mx-auto px-6">
-      <span className="flex justify-center font-semibold text-3xl text-center mb-2 text-foreground">
-        {t("projects.title")}
-      </span>
-      <p className="text-center text-muted-foreground text-sm mb-20 line-clamp-1">
-        {t("projects.subtitle")}
-      </p>
+      <div className="overflow-hidden">
+        <motion.span
+          className="flex justify-center font-semibold text-3xl text-center mb-2 text-foreground"
+          variants={titleVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-20px" }}>
+          {t("projects.title")}
+        </motion.span>
+      </div>
+      <div className="overflow-hidden">
+        <motion.p
+          className="text-center text-muted-foreground text-sm mb-20 line-clamp-1"
+          variants={subtitleVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-20px" }}>
+          {t("projects.subtitle")}
+        </motion.p>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20">
         {projectList.map((project, i) => (
-          <motion.div
+          <ProjectCard
             key={project.url}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.1 }}>
-            <ProjectCard
-              title={project.title}
-              url={project.url}
-              description={t(project.descriptionKey)}
-              screenshot={project.screenshot}
-            />
-          </motion.div>
+            title={project.title}
+            url={project.url}
+            description={t(project.descriptionKey)}
+            screenshot={project.screenshot}
+            index={i}
+          />
         ))}
       </div>
     </section>
