@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import Header from "@/components/Header";
 import Arrow from "@/components/Arrow";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -36,7 +36,10 @@ const AnimatedTitle = ({ text }: { text: string }) => {
       {text.split("").map((char, i) => (
         <motion.span
           key={i}
-          style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : "normal" }}
+          style={{
+            display: "inline-block",
+            whiteSpace: char === " " ? "pre" : "normal",
+          }}
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}

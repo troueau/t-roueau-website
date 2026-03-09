@@ -99,7 +99,7 @@ const Lightbox = ({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            src={images[currentIndex]}
+            src={images[currentIndex].replace(/\.webp$/, "-1600w.webp")}
             alt=""
             className="max-h-[88vh] max-w-[88vw] object-contain"
             onClick={(e) => e.stopPropagation()}

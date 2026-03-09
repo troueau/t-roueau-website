@@ -28,11 +28,16 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
     link.rel = "preload";
     link.as = "image";
     link.href = resized(HERO_PHOTO, "-1600w");
-    link.setAttribute("imagesrcset", `${resized(HERO_PHOTO, "-1600w")} 1600w, ${HERO_PHOTO} 7728w`);
+    link.setAttribute(
+      "imagesrcset",
+      `${resized(HERO_PHOTO, "-1600w")} 1600w, ${HERO_PHOTO} 7728w`,
+    );
     link.setAttribute("imagesizes", "(max-width: 1280px) 83vw, 1067px");
     link.setAttribute("fetchpriority", "high");
     document.head.appendChild(link);
-    return () => { document.head.removeChild(link); };
+    return () => {
+      document.head.removeChild(link);
+    };
   }, []);
 
   const allPhotos = [HERO_PHOTO, ...photos];
@@ -86,8 +91,6 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
             <div className="overflow-hidden bg-muted select-none pointer-events-none">
               <motion.img
                 src={resized(src, "-800w")}
-                srcSet={`${resized(src, "-800w")} 800w, ${resized(src, "-1600w")} 1600w`}
-                sizes="(max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 308px"
                 alt=""
                 loading="lazy"
                 decoding="async"

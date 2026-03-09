@@ -3,6 +3,26 @@ import Header from "@/components/Header";
 import PhotoGallery from "@/components/PhotoGallery";
 import { listPhotos } from "@/lib/s3";
 import Footer from "@/components/Footer";
+import { motion, useScroll, useSpring } from "framer-motion";
+
+const ScrollProgress = () => {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-[2px] z-[60] origin-left"
+      style={{
+        scaleX,
+        backgroundColor: "hsl(var(--primary))",
+      }}
+    />
+  );
+};
 
 const Gallery = () => {
   const { data: allFiles = [], isError } = useQuery({
@@ -14,6 +34,8 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <ScrollProgress />
+
       <Header showProjects showAbout />
 
       <div className="pt-14 pb-16 space-y-16 flex-1">
