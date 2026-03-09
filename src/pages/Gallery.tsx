@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import PhotoGallery from "@/components/PhotoGallery";
-import Projects from "@/components/Projects";
 import { listPhotos } from "@/lib/s3";
 import Footer from "@/components/Footer";
 

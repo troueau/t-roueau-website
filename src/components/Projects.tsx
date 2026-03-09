@@ -14,21 +14,21 @@ const projectList: {
     url: "https://flavieherbreteau.com",
     descriptionKey: "projects.flavie.description",
     screenshot:
-      "https://ddrrqia38iv2z.cloudfront.net/flavie-website-screenshot.webp",
+      "https://ddrrqia38iv2z.cloudfront.net/projects/flavie-website-screenshot.webp",
   },
   {
     title: "Shana Herbreteau",
     url: "https://shanaherbreteau.com",
     descriptionKey: "projects.shana.description",
     screenshot:
-      "https://ddrrqia38iv2z.cloudfront.net/shana-website-screenshot.webp",
+      "https://ddrrqia38iv2z.cloudfront.net/projects/shana-website-screenshot.webp",
   },
   {
     title: "Martin Adeline",
     url: "https://martinadeline.com",
     descriptionKey: "projects.martin.description",
     screenshot:
-      "https://ddrrqia38iv2z.cloudfront.net/martin-website-screenshot.webp",
+      "https://ddrrqia38iv2z.cloudfront.net/projects/martin-website-screenshot.webp",
   },
   {
     title: "Github",
@@ -56,8 +56,6 @@ const ProjectCard = ({
       target="_blank"
       rel="noopener noreferrer"
       className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition duration-300 card-shadow hover:glow-shadow"
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       whileTap={{ scale: 0.97 }}>
@@ -92,9 +90,7 @@ const ProjectCard = ({
 
       <div className="p-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <span className="text-lg text-foreground leading-tight">
-            {title}
-          </span>
+          <span className="text-lg text-foreground leading-tight">{title}</span>
           <p className="text-sm text-muted-foreground mt-1 line-clamp-2 h-10">
             {description}
           </p>

@@ -19,10 +19,7 @@ function s3PhotosPlugin() {
       const accessKeyId = envVars.AWS_ACCESS_KEY_ID;
       const secretAccessKey = envVars.AWS_SECRET_ACCESS_KEY;
       const bucket = envVars.S3_BUCKET_NAME;
-      const cloudfrontUrl = (envVars.CLOUDFRONT_URL ?? "").replace(
-        /\/$/,
-        ""
-      );
+      const cloudfrontUrl = (envVars.CLOUDFRONT_URL ?? "").replace(/\/$/, "");
 
       if (
         !region ||
@@ -32,7 +29,7 @@ function s3PhotosPlugin() {
         !cloudfrontUrl
       ) {
         console.warn(
-          "[s3-photos] Missing env vars, skipping photo list generation."
+          "[s3-photos] Missing env vars, skipping photo list generation.",
         );
         return;
       }
@@ -44,7 +41,7 @@ function s3PhotosPlugin() {
         credentials: { accessKeyId, secretAccessKey },
       });
       const response = await s3.send(
-        new ListObjectsV2Command({ Bucket: bucket })
+        new ListObjectsV2Command({ Bucket: bucket, Prefix: "gallery/" }),
       );
 
       const urls = (response.Contents ?? [])
@@ -54,14 +51,14 @@ function s3PhotosPlugin() {
         })
         .sort(
           (a, b) =>
-            (b.LastModified?.getTime() ?? 0) - (a.LastModified?.getTime() ?? 0)
+            (b.LastModified?.getTime() ?? 0) - (a.LastModified?.getTime() ?? 0),
         )
         .map((obj) => `${cloudfrontUrl}/${obj.Key}`);
 
       await fs.mkdir("public", { recursive: true });
       await fs.writeFile("public/photos.json", JSON.stringify(urls));
       console.log(
-        `[s3-photos] Generated public/photos.json with ${urls.length} photos.`
+        `[s3-photos] Generated public/photos.json with ${urls.length} photos.`,
       );
     },
   };
