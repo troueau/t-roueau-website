@@ -12,7 +12,7 @@ const itemVariants = {
 };
 
 const HERO_PHOTO =
-  "https://ddrrqia38iv2z.cloudfront.net/B332122-R1-32-14A.webp";
+  "https://ddrrqia38iv2z.cloudfront.net/gallery/B332122-R1-32-14A.webp";
 const HERO_INDEX = -1;
 
 function resized(url: string, suffix: "-800w" | "-1600w"): string {
