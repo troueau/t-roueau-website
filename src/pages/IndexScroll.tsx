@@ -250,7 +250,15 @@ const IndexScroll = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-          {t("index.hero.subtitle")}
+          {t("index.hero.subtitle")
+            .split(". ")
+            .map((part, i, arr) => (
+              <span key={i}>
+                {part}
+                {i < arr.length - 1 && "."}
+                {i < arr.length - 1 && <br />}
+              </span>
+            ))}
         </motion.p>
       </section>
 
