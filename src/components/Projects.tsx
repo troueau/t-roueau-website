@@ -17,6 +17,13 @@ const projectList: {
       "https://ddrrqia38iv2z.cloudfront.net/projects/flavie-website-screenshot.webp",
   },
   {
+    title: "Poche APP",
+    url: "https://poche-app.space",
+    descriptionKey: "projects.poche.description",
+    screenshot:
+      "https://ddrrqia38iv2z.cloudfront.net/projects/poche-app.space_mobile.webp",
+  },
+  {
     title: "Shana Herbreteau",
     url: "https://shanaherbreteau.com",
     descriptionKey: "projects.shana.description",
@@ -126,7 +133,7 @@ const Projects = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="projects" className="w-full max-w-7xl mx-auto px-6">
+    <section id="projects" className="w-full max-w-7xl mx-auto px-6 pt-20">
       <div className="overflow-hidden">
         <motion.span
           className="flex justify-center font-semibold text-3xl text-center mb-2 text-foreground"
@@ -147,7 +154,7 @@ const Projects = () => {
           {t("projects.subtitle")}
         </motion.p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-20">
         {projectList.map((project) => (
           <ProjectCard
             key={project.url}

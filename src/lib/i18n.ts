@@ -28,6 +28,8 @@ export const translations = {
     "projects.title": "Projects",
     "projects.subtitle": "A selection of recent projects.",
     "projects.flavie.description": "Website of Flavie Herbreteau.",
+    "projects.poche.description":
+      "Web application for personnal finance analysis",
     "projects.shana.description": "Website of Shana Herbreteau.",
     "projects.martin.description": "Website of Martin Adeline.",
     "projects.github.description": "My Github profile.",
@@ -68,6 +70,8 @@ export const translations = {
     "projects.title": "Projets",
     "projects.subtitle": "Une sélection de projets récents.",
     "projects.flavie.description": "Site de Flavie Herbreteau.",
+    "projects.poche.description":
+      "Application web d'analyse de finances personelles",
     "projects.shana.description": "Site de Shana Herbreteau.",
     "projects.martin.description": "Site de Martin Adeline.",
     "projects.github.description": "Mon profil Github.",
