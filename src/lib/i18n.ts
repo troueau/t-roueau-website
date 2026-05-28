@@ -27,6 +27,8 @@ export const translations = {
     // Projects page
     "projects.title": "Projects",
     "projects.subtitle": "A selection of recent projects.",
+    "projects.turcane.description":
+      "Website of La Turcane - Modernization of a bed-and-breakfast website.",
     "projects.flavie.description": "Website of Flavie Herbreteau.",
     "projects.poche.description":
       "Web application for personnal finance analysis",
@@ -69,6 +71,8 @@ export const translations = {
     // Projects page
     "projects.title": "Projets",
     "projects.subtitle": "Une sélection de projets récents.",
+    "projects.turcane.description":
+      "Site de La Turcane. Modernisation d'un site web de chambres d'hôtes.",
     "projects.flavie.description": "Site de Flavie Herbreteau.",
     "projects.poche.description":
       "Application web d'analyse de finances personelles",

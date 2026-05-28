@@ -10,6 +10,12 @@ const projectList: {
   screenshot?: string;
 }[] = [
   {
+    title: "La Turcane",
+    url: "https://la-turcane.fr",
+    descriptionKey: "projects.turcane.description",
+    screenshot: "https://ddrrqia38iv2z.cloudfront.net/projects/la-turcane.webp",
+  },
+  {
     title: "Flavie Herbreteau",
     url: "https://flavieherbreteau.com",
     descriptionKey: "projects.flavie.description",
