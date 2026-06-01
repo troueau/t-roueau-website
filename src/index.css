@@ -43,8 +43,8 @@
     --sidebar-border: 0 0% 14%;
     --sidebar-ring: 220 70% 62%;
 
-    --font-display: "Cormorant Garamond", serif;
-    --font-body: "Inter", sans-serif;
+    --font-display: "Futura", "Century Gothic", "Trebuchet MS", sans-serif;
+    --font-body: "Futura", "Century Gothic", "Trebuchet MS", sans-serif;
 
     --shadow-glow: 0 0 40px hsl(220 70% 62% / 0.08);
     --shadow-card: 0 4px 24px hsl(0 0% 0% / 0.4);
@@ -131,7 +131,16 @@
   }
 }
 
+@keyframes name-reveal {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @layer utilities {
+  .animate-name-reveal {
+    animation: name-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
+  }
+
   .text-display {
     font-family: var(--font-display);
   }

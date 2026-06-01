@@ -197,7 +197,7 @@ const About = () => {
 
   const glowX = useMotionValue(0);
   const glowY = useMotionValue(0);
-  const glowBg = useMotionTemplate`radial-gradient(650px at ${glowX}px ${glowY}px, hsl(220 70% 62% / 0.06), transparent 60%)`;
+  const glowBg = useMotionTemplate`radial-gradient(700px at ${glowX}px ${glowY}px, hsl(220 70% 62% / 0.09), transparent 85%)`;
 
   useEffect(() => {
     const handle = (e: MouseEvent) => {
@@ -212,10 +212,9 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      {/* Cursor glow */}
       {!reduced && (
         <motion.div
-          className="pointer-events-none fixed inset-0 z-0"
+          className="pointer-events-none fixed inset-0 z-0 mix-blend-plus-lighter dark:mix-blend-normal"
           style={{ background: glowBg }}
         />
       )}
@@ -224,49 +223,26 @@ const About = () => {
 
       {/* ── Hero ── */}
       <section className="relative flex items-start px-8 sm:px-16 pt-24 pb-14 overflow-hidden">
-        {/* Static ambient glow */}
-        <div
-          className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse, hsl(220 70% 62% / 0.08) 0%, transparent 65%)",
-          }}
-        />
-
         <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-20 items-start">
           {/* Left — text */}
           <div className="pt-16">
             {/* Label */}
-            <div className="overflow-hidden mb-4">
-              <motion.p
-                className="text-xs font-mono text-primary/70 tracking-[0.25em] uppercase"
-                initial={{ y: "110%", opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.1,
-                  ease: [0.22, 1, 0.36, 1],
-                }}>
-                {t("about.title")}
-              </motion.p>
-            </div>
+            <p
+              className="text-xs font-mono text-primary/70 tracking-[0.25em] uppercase mb-4"
+              style={{ animation: "name-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both" }}>
+              {t("about.title")}
+            </p>
 
             {/* Name */}
-            {["Tom", "Rousseau"].map((word, i) => (
-              <div key={word} className="overflow-hidden">
-                <motion.h1
-                  className="text-[16vw] sm:text-[10vw] lg:text-[7vw] xl:text-8xl font-semibold leading-[0.9] tracking-tight text-foreground"
-                  initial={{ y: "105%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{
-                    duration: 0.85,
-                    delay: 0.18 + i * 0.1,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}>
+            <div className="animate-name-reveal">
+              {["Tom", "Rousseau"].map((word) => (
+                <h1
+                  key={word}
+                  className="text-[16vw] sm:text-[10vw] lg:text-[7vw] xl:text-8xl font-semibold leading-[0.9] tracking-tight text-foreground">
                   {word}
-                </motion.h1>
-              </div>
-            ))}
+                </h1>
+              ))}
+            </div>
 
             {/* Age pill */}
             <motion.div

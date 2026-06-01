@@ -4,6 +4,7 @@ import {
   useScroll,
   useTransform,
   useMotionValue,
+  useMotionTemplate,
   useSpring,
   useReducedMotion,
   MotionValue,
@@ -376,7 +377,7 @@ const ProjectCard = ({
                   src={screenshot}
                   alt={`${title} screenshot`}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-700 "
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -549,7 +550,7 @@ const ProjectsSection = ({ reduced }: { reduced: boolean }) => {
 
   return (
     <section ref={ref} className="relative px-8 sm:px-16 py-24 sm:py-36">
-      <div className="mb-16 sm:mb-20">
+      <div className="mb-8 sm:mb-12">
         <div className="overflow-hidden">
           <motion.h2
             className="text-[12vw] sm:text-[7vw] font-semibold leading-none tracking-tight text-foreground"
@@ -594,90 +595,131 @@ const ProjectsSection = ({ reduced }: { reduced: boolean }) => {
 
 const AboutSection = ({ reduced }: { reduced: boolean }) => {
   const { t } = useLanguage();
-  const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt(reduced, 6);
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end end"],
-  });
-  // Section slides up from below as it enters
-  const sectionY = useTransform(
-    scrollYProgress,
-    [0, 0.6],
-    [reduced ? 0 : 80, 0],
-  );
+  const mouseX = useMotionValue(-999);
+  const mouseY = useMotionValue(-999);
+  const spotlight = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, hsl(220 70% 62% / 0.11), transparent 70%)`;
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (reduced) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(-999);
+    mouseY.set(-999);
+  };
 
   return (
-    <section ref={ref} className="px-8 sm:px-16 pb-24 sm:pb-36">
-      <motion.div style={{ y: sectionY }}>
-        <div style={{ perspective: "1200px" }}>
-          <motion.a
-            href="/about"
-            className="group relative block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors duration-300 cursor-pointer px-10 py-16 sm:px-20 sm:py-24"
-            onMouseMove={onMouseMove}
-            onMouseLeave={onMouseLeave}
-            style={{ rotateX, rotateY }}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-            {/* Background — grid */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                backgroundImage:
-                  "linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px)",
-                backgroundSize: "48px 48px",
-              }}
-            />
-            {/* Background — blobs */}
-            <div
-              className="absolute -bottom-24 -left-24 w-[480px] h-[480px] rounded-full pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(circle, hsl(220 70% 62% / 0.13) 0%, transparent 65%)",
-              }}
-            />
-            <div
-              className="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(circle, hsl(260 70% 65% / 0.09) 0%, transparent 65%)",
-              }}
-            />
-            {/* Background — top edge glow */}
-            <div
-              className="absolute top-0 left-0 right-0 h-px pointer-events-none"
-              style={{
-                background:
-                  "linear-gradient(90deg, transparent, hsl(220 70% 62% / 0.4), transparent)",
-              }}
-            />
-            {/* Background — hover sweep */}
-            <div
-              className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-              style={{
-                background:
-                  "radial-gradient(ellipse, hsl(220 70% 62% / 0.08) 0%, transparent 70%)",
-              }}
-            />
+    <section className="px-8 sm:px-16 pb-24 sm:pb-36">
+      <motion.a
+        href="/about"
+        className="group relative block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors duration-300 cursor-pointer px-8 py-12 sm:px-16 sm:py-16"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+        {/* Spotlight cursor */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: spotlight }}
+        />
 
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-10">
-              <div>
-                <h2 className="text-[14vw] sm:text-[8vw] font-semibold leading-none tracking-tight text-foreground mb-6">
-                  {t("index.about.title")}
-                </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
-                  {t("index.about.description")}
-                </p>
-              </div>
-              <span className="inline-flex shrink-0 items-center gap-3 text-base font-medium text-primary group-hover:gap-4 transition-all duration-300">
-                {t("index.about.label")}
-                <Arrow />
-              </span>
-            </div>
-          </motion.a>
+        {/* Background — grid */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+          }}
+        />
+        {/* Background — blobs */}
+        <div
+          className="absolute -bottom-24 -left-24 w-[480px] h-[480px] rounded-full pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, hsl(220 70% 62% / 0.13) 0%, transparent 65%)",
+          }}
+        />
+        <div
+          className="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, hsl(260 70% 65% / 0.09) 0%, transparent 65%)",
+          }}
+        />
+        {/* Top edge glow */}
+        <div
+          className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, hsl(220 70% 62% / 0.4), transparent)",
+          }}
+        />
+
+        <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
+          <div>
+            <h2 className="text-[11vw] sm:text-[6.5vw] font-semibold leading-none tracking-tight text-foreground mb-5">
+              {t("index.about.title")}
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
+              {t("index.about.description")}
+            </p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-3 text-base font-medium text-primary group-hover:gap-4 transition-all duration-300">
+            {t("index.about.label")}
+            <Arrow />
+          </span>
         </div>
+      </motion.a>
+    </section>
+  );
+};
+
+// ── Booking section ───────────────────────────────────────────────────────────
+
+const BookingSection = () => {
+  const { t } = useLanguage();
+
+  return (
+    <section className="px-8 sm:px-16 pb-24 sm:pb-36">
+      <motion.div
+        className="border-t border-border pt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+            </span>
+            <span className="text-xs font-mono text-primary/70 tracking-widest uppercase">
+              {t("index.booking.label")}
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground mb-2">
+            {t("index.booking.title")}
+          </h2>
+          <p className="text-muted-foreground leading-relaxed max-w-sm">
+            {t("index.booking.description")}
+          </p>
+        </div>
+        <motion.a
+          href="https://calendly.com/tomrousseau/30min"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 inline-flex items-center gap-3 px-7 py-4 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-80 transition-opacity duration-200"
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}>
+          {t("index.booking.cta")}
+          <Arrow />
+        </motion.a>
       </motion.div>
     </section>
   );
@@ -697,6 +739,7 @@ const IndexScroll = () => {
       <Hero scrollY={scrollY} reduced={reduced} />
       <ProjectsSection reduced={reduced} />
       <AboutSection reduced={reduced} />
+      <BookingSection />
 
       <Footer />
     </div>

@@ -8,8 +8,7 @@ export const translations = {
     // Index — hero
     "index.hero.title": "Hello.",
     "index.hero.name": "Tom Rousseau",
-    "index.hero.subtitle":
-      "I build things for the web and take photos. Scroll to explore.",
+    "index.hero.subtitle": "I build things for the web. Scroll to explore.",
 
     // Index — projects section
     "index.projects.title": "Projects",
@@ -30,18 +29,30 @@ export const translations = {
     "projects.shana.description": "Website of Shana Herbreteau.",
     "projects.martin.description": "Website of Martin Adeline.",
     "projects.github.description": "My Github profile.",
+    "projects.year.label": "Year",
+    "projects.type.label": "Type",
+    "projects.live.label": "Live",
+    "projects.live.link": "Visit site",
+    "projects.title.about": "About this project",
 
     // Project long descriptions (detail pages)
     "projects.turcane.long":
-      "Complete redesign of La Turcane, a bed-and-breakfast in Brittany. The goal was to create a warm, elegant digital experience that reflects the authenticity of the place — refined typography, smooth interactions, and an interface that feels as welcoming as the property itself.",
+      "Complete redesign of La Turcane, a bed-and-breakfast in Turquant. The goal was to create a warm, elegant digital experience that reflects the authenticity of the place — refined typography, smooth interactions, and an interface that feels as welcoming as the property itself.",
     "projects.flavie.long":
-      "Portfolio website for Flavie Herbreteau, photographer. The design steps out of the way and lets her visual work breathe — a minimal, clean layout with smooth navigation that keeps the focus on the images.",
+      "Portfolio website for Flavie Herbreteau, photographer and videographer. The design steps out of the way and lets her visual work breathe — a minimal, clean layout with smooth navigation that keeps the focus on the images.",
     "projects.poche.long":
       "Personal finance web app for tracking and analysing income and expenses. The interface is designed for clarity above all: get a clear picture of your financial habits without friction.",
     "projects.shana.long":
       "Portfolio website for Shana Herbreteau, artist. A carefully considered minimal interface designed to showcase her creative universe without distraction.",
     "projects.martin.long":
       "Portfolio website for Martin Adeline, artist. Clean and refined — a site that presents his work with the attention to detail it deserves.",
+
+    // Index — booking section
+    "index.booking.title": "Let's talk",
+    "index.booking.description":
+      "Have a project in mind? Book a free 30-minute call.",
+    "index.booking.cta": "Book a call",
+    "index.booking.label": "Available",
 
     // About page
     "about.title": "About",
@@ -63,7 +74,7 @@ export const translations = {
     "index.hero.title": "Hello.",
     "index.hero.name": "Tom Rousseau",
     "index.hero.subtitle":
-      "Je crée des choses pour le web et je prends des photos. Défilez pour explorer.",
+      "Je crée des choses pour le web. Défilez pour explorer.",
 
     // Index — projects section
     "index.projects.title": "Projets",
@@ -83,18 +94,30 @@ export const translations = {
     "projects.shana.description": "Site de Shana Herbreteau.",
     "projects.martin.description": "Site de Martin Adeline.",
     "projects.github.description": "Mon profil Github.",
+    "projects.year.label": "Année",
+    "projects.type.label": "Type",
+    "projects.live.label": "Live",
+    "projects.live.link": "Visiter le site",
+    "projects.title.about": "À propos de ce projet",
 
     // Project long descriptions (detail pages)
     "projects.turcane.long":
-      "Refonte complète du site de La Turcane, une chambre d'hôtes en Bretagne. L'objectif : créer une expérience digitale chaleureuse et élégante, à l'image de l'authenticité du lieu — typographie soignée, interactions fluides, interface aussi accueillante que l'endroit lui-même.",
+      "Refonte complète du site de La Turcane, des chambres d'hôtes à Turquant. L'objectif : créer une expérience digitale chaleureuse et élégante, à l'image de l'authenticité du lieu — typographie soignée, interactions fluides, interface aussi accueillante que l'endroit lui-même.",
     "projects.flavie.long":
-      "Site portfolio pour Flavie Herbreteau, photographe. Le design s'efface pour laisser respirer le travail visuel — mise en page épurée et navigation fluide qui gardent le focus sur les images.",
+      "Site portfolio pour Flavie Herbreteau, photographe et vidéaste. Le design s'efface pour laisser respirer le travail visuel — mise en page épurée et navigation fluide qui gardent le focus sur les images.",
     "projects.poche.long":
       "Application web de gestion de finances personnelles pour suivre et analyser revenus et dépenses. L'interface est conçue pour la clarté avant tout : un regard net sur ses habitudes financières, sans friction.",
     "projects.shana.long":
       "Site portfolio pour Shana Herbreteau, artiste. Une interface minimaliste et réfléchie pour mettre en valeur son univers créatif sans distraction.",
     "projects.martin.long":
       "Site portfolio pour Martin Adeline, artiste. Sobre et raffiné — un site qui présente son travail avec l'attention aux détails qu'il mérite.",
+
+    // Index — booking section
+    "index.booking.title": "Parlons-en",
+    "index.booking.description":
+      "Un projet en tête ? Réservez un appel gratuit de 30 minutes.",
+    "index.booking.cta": "Prendre rendez-vous",
+    "index.booking.label": "Disponible",
 
     // About page
     "about.title": "À propos",

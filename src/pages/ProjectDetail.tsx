@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Navigate, Link, useNavigate } from "react-router-dom";
 import {
   motion,
@@ -35,7 +35,7 @@ const PROJECTS: Record<string, ProjectEntry> = {
     title: "La Turcane",
     number: "01",
     url: "https://la-turcane.fr",
-    year: "2024",
+    year: "2026",
     type: "Website",
     tags: ["React", "Tailwind CSS", "TypeScript"],
     screenshot: "https://ddrrqia38iv2z.cloudfront.net/projects/la-turcane.webp",
@@ -47,9 +47,9 @@ const PROJECTS: Record<string, ProjectEntry> = {
     title: "Flavie Herbreteau",
     number: "02",
     url: "https://flavieherbreteau.com",
-    year: "2023",
+    year: "2025",
     type: "Portfolio",
-    tags: ["React", "Tailwind CSS", "TypeScript"],
+    tags: ["Next.js", "CSS", "TypeScript"],
     screenshot:
       "https://ddrrqia38iv2z.cloudfront.net/projects/flavie-website-screenshot.webp",
     descriptionKey: "projects.flavie.description",
@@ -60,7 +60,7 @@ const PROJECTS: Record<string, ProjectEntry> = {
     title: "Poche APP",
     number: "03",
     url: "https://poche-app.space",
-    year: "2024",
+    year: "2026",
     type: "Web App",
     tags: ["React", "Tailwind CSS", "TypeScript", "Finance"],
     screenshot:
@@ -73,7 +73,7 @@ const PROJECTS: Record<string, ProjectEntry> = {
     title: "Shana Herbreteau",
     number: "04",
     url: "https://shanaherbreteau.com",
-    year: "2023",
+    year: "2025",
     type: "Portfolio",
     tags: ["React", "Tailwind CSS", "TypeScript"],
     screenshot:
@@ -86,15 +86,73 @@ const PROJECTS: Record<string, ProjectEntry> = {
     title: "Martin Adeline",
     number: "05",
     url: "https://martinadeline.com",
-    year: "2023",
+    year: "2024",
     type: "Portfolio",
-    tags: ["React", "Tailwind CSS", "TypeScript"],
+    tags: ["Next.js", "CSS", "TypeScript"],
     screenshot:
       "https://ddrrqia38iv2z.cloudfront.net/projects/martin-website-screenshot.webp",
     descriptionKey: "projects.martin.description",
     longKey: "projects.martin.long",
-    nextSlug: null,
+    nextSlug: "la-turcane",
   },
+};
+
+// ── Typewriter TLD ────────────────────────────────────────────────────────────
+
+const TLDS = [".com", ".fr", ".de", ".io", ".dev", ".net"];
+
+const TypewriterTld = () => {
+  const [displayed, setDisplayed] = useState("");
+  const [tldIdx, setTldIdx] = useState(0);
+  const [phase, setPhase] = useState<"idle" | "typing" | "erasing">("idle");
+
+  useEffect(() => {
+    const t = setTimeout(() => setPhase("typing"), 1100);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const tld = TLDS[tldIdx];
+    if (phase === "typing") {
+      if (displayed.length < tld.length) {
+        const t = setTimeout(
+          () => setDisplayed(tld.slice(0, displayed.length + 1)),
+          100,
+        );
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setPhase("erasing"), 1600);
+        return () => clearTimeout(t);
+      }
+    }
+    if (phase === "erasing") {
+      if (displayed.length > 0) {
+        const t = setTimeout(() => setDisplayed((d) => d.slice(0, -1)), 65);
+        return () => clearTimeout(t);
+      } else {
+        setTldIdx((i) => (i + 1) % TLDS.length);
+        setPhase("typing");
+      }
+    }
+  }, [phase, displayed, tldIdx]);
+
+  return (
+    <span className="text-[5vw] sm:text-[3.5vw] font-semibold leading-none tracking-tight text-foreground/30">
+      {displayed}
+      {phase !== "idle" && (
+        <motion.span
+          animate={{ opacity: [1, 1, 0, 0] }}
+          transition={{
+            repeat: Infinity,
+            duration: 1,
+            times: [0, 0.48, 0.5, 1],
+            ease: "linear",
+          }}>
+          |
+        </motion.span>
+      )}
+    </span>
+  );
 };
 
 // ── 3D tilt hook ──────────────────────────────────────────────────────────────
@@ -159,76 +217,76 @@ const BrowserMockup = ({
   scrollY: MotionValue<number>;
   reduced: boolean;
 }) => {
-  const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt(
-    reduced,
-    4,
-  );
+  const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt(reduced, 4);
 
-  // Subtle scroll parallax on the mockup
-  const mockupY = useTransform(scrollY, [0, 800], [0, reduced ? 0 : -60]);
+  const mockupY = useTransform(scrollY, [0, 700], [0, reduced ? 0 : -40]);
+  const mockupScale = useTransform(scrollY, [0, 700], [1, reduced ? 1 : 0.8]);
+  const mockupRotateX = useTransform(scrollY, [0, 700], [0, reduced ? 0 : 16]);
 
   const displayUrl = url.replace("https://", "");
 
   return (
-    <motion.div
-      className="relative"
-      style={{ y: mockupY }}
-    >
-      {/* Perspective container */}
-      <div style={{ perspective: "1400px" }}>
-        <motion.div
-          onMouseMove={onMouseMove}
-          onMouseLeave={onMouseLeave}
-          style={{ rotateX, rotateY }}
-          initial={
-            reduced
-              ? { opacity: 0, scale: 0.95 }
-              : { opacity: 0, rotateY: 18, rotateX: -8, scale: 0.88 }
-          }
-          animate={{ opacity: 1, rotateY: 0, rotateX: 0, scale: 1 }}
-          transition={{ duration: 1.3, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative rounded-xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_hsl(0_0%_0%/0.6)]"
-        >
-          {/* Browser chrome */}
-          <div className="h-10 bg-card/90 backdrop-blur flex items-center gap-1.5 px-4 border-b border-border">
-            <div className="w-3 h-3 rounded-full bg-foreground/10" />
-            <div className="w-3 h-3 rounded-full bg-foreground/10" />
-            <div className="w-3 h-3 rounded-full bg-foreground/10" />
-            <div className="ml-4 flex-1 h-5 bg-foreground/5 rounded-md flex items-center px-3">
-              <span className="text-[11px] text-foreground/30 truncate">
-                {displayUrl}
-              </span>
-            </div>
-          </div>
-
-          {/* Screenshot */}
-          {screenshot ? (
-            <img
-              src={screenshot}
-              alt={`${title} screenshot`}
-              className="w-full block"
-              draggable={false}
-            />
-          ) : (
-            <div className="w-full aspect-video bg-muted flex items-center justify-center">
-              <span className="text-muted-foreground text-sm">No preview</span>
-            </div>
-          )}
-
-          {/* Shine overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-transparent pointer-events-none" />
-        </motion.div>
-      </div>
-
-      {/* Glow shadow under mockup */}
+    <div style={{ perspective: "1000px" }}>
       <motion.div
-        className="mx-auto mt-6 h-16 rounded-full blur-3xl opacity-20"
-        style={{ width: "70%", background: "hsl(220 70% 62% / 0.8)" }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.2 }}
-        transition={{ delay: 1, duration: 1 }}
-      />
-    </motion.div>
+        className="relative"
+        style={{ y: mockupY, scale: mockupScale, rotateX: mockupRotateX }}>
+        {/* Perspective container for mouse tilt */}
+        <div style={{ perspective: "1400px" }}>
+          <motion.div
+            onMouseMove={onMouseMove}
+            onMouseLeave={onMouseLeave}
+            style={{ rotateX, rotateY }}
+            initial={
+              reduced
+                ? { opacity: 0, scale: 0.95 }
+                : { opacity: 0, rotateY: 18, rotateX: -8, scale: 0.88 }
+            }
+            animate={{ opacity: 1, rotateY: 0, rotateX: 0, scale: 1 }}
+            transition={{ duration: 1.3, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="relative rounded-xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_hsl(0_0%_0%/0.6)]">
+            {/* Browser chrome */}
+            <div className="h-10 bg-card/90 backdrop-blur flex items-center gap-1.5 px-4 border-b border-border">
+              <div className="w-3 h-3 rounded-full bg-foreground/10" />
+              <div className="w-3 h-3 rounded-full bg-foreground/10" />
+              <div className="w-3 h-3 rounded-full bg-foreground/10" />
+              <div className="ml-4 flex-1 h-5 bg-foreground/5 rounded-md flex items-center px-3">
+                <span className="text-[11px] text-foreground/30 truncate">
+                  {displayUrl}
+                </span>
+              </div>
+            </div>
+
+            {/* Screenshot */}
+            {screenshot ? (
+              <img
+                src={screenshot}
+                alt={`${title} screenshot`}
+                className="w-full block"
+                draggable={false}
+              />
+            ) : (
+              <div className="w-full aspect-video bg-muted flex items-center justify-center">
+                <span className="text-muted-foreground text-sm">
+                  No preview
+                </span>
+              </div>
+            )}
+
+            {/* Shine overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-transparent pointer-events-none" />
+          </motion.div>
+        </div>
+
+        {/* Glow shadow under mockup */}
+        <motion.div
+          className="mx-auto mt-6 h-16 rounded-full blur-3xl opacity-20"
+          style={{ width: "70%", background: "hsl(220 70% 62% / 0.8)" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.2 }}
+          transition={{ delay: 1, duration: 1 }}
+        />
+      </motion.div>
+    </div>
   );
 };
 
@@ -258,24 +316,20 @@ const NextProjectCard = ({
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
         <motion.div
           className="group relative rounded-2xl border border-border bg-card overflow-hidden p-8 sm:p-12 hover:border-primary/30 transition-colors duration-300 cursor-pointer"
           onClick={handleClick}
           onMouseMove={onMouseMove}
           onMouseLeave={onMouseLeave}
-          style={{ rotateX, rotateY }}
-        >
+          style={{ rotateX, rotateY }}>
           <p className="text-xs font-mono text-muted-foreground/40 tracking-widest mb-4">
             Next project
           </p>
           <h3 className="text-4xl sm:text-5xl font-semibold leading-none tracking-tight text-foreground mb-3">
             {project.title}
           </h3>
-          <p className="text-muted-foreground text-sm mb-6">
-            {project.type}
-          </p>
+          <p className="text-muted-foreground text-sm mb-6">{project.type}</p>
           <span className="inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all duration-300">
             View project
             <ArrowUpRight className="w-4 h-4" />
@@ -301,9 +355,7 @@ const ProjectDetail = () => {
   const project = slug ? PROJECTS[slug] : undefined;
   if (!project) return <Navigate to="/" replace />;
 
-  const nextProject = project.nextSlug
-    ? PROJECTS[project.nextSlug]
-    : null;
+  const nextProject = project.nextSlug ? PROJECTS[project.nextSlug] : null;
 
   return (
     <div className="bg-background overflow-x-hidden">
@@ -311,7 +363,7 @@ const ProjectDetail = () => {
       <Header hideNav />
 
       {/* ── Hero ── */}
-      <section className="relative min-h-screen flex flex-col justify-center px-8 sm:px-16 pt-28 pb-16 overflow-hidden">
+      <section className="relative flex flex-col px-8 sm:px-16 pt-44 pb-4 overflow-hidden">
         {/* Background glow */}
         <div
           className="absolute -top-40 right-0 w-[700px] h-[700px] rounded-full pointer-events-none"
@@ -322,48 +374,50 @@ const ProjectDetail = () => {
         />
 
         {/* Back link */}
-        <motion.div
+        {/*         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-12"
-        >
+          className="mb-12">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-          >
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             <ArrowLeft className="w-4 h-4" />
             Home
           </Link>
-        </motion.div>
+        </motion.div> */}
 
         {/* Title */}
-        <div className="overflow-hidden mb-6">
-          <motion.h1
-            className="text-[12vw] sm:text-[8vw] font-semibold leading-none tracking-tight text-foreground"
-            initial={{ y: "105%", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {project.title}
-          </motion.h1>
+        <div className="flex items-baseline gap-2 mb-2">
+          <div className="overflow-hidden">
+            <motion.h1
+              className="text-[12vw] sm:text-[8vw] font-semibold leading-none tracking-tight text-foreground"
+              initial={{ y: "105%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{
+                duration: 0.9,
+                delay: 0.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}>
+              {project.title}
+            </motion.h1>
+          </div>
+          <TypewriterTld />
         </div>
 
         {/* Tags */}
         <motion.div
-          className="flex flex-wrap gap-2 mb-12"
+          className="flex flex-wrap gap-2 mb-20"
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.35 }}
-        >
+          transition={{ duration: 0.6, delay: 0.35 }}>
           <span className="px-3 py-1 rounded-full border border-border text-xs text-muted-foreground bg-card">
             {project.type}
           </span>
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 rounded-full border border-border text-xs text-muted-foreground bg-card"
-            >
+              className="px-3 py-1 rounded-full border border-border text-xs text-muted-foreground bg-card">
               {tag}
             </span>
           ))}
@@ -371,28 +425,29 @@ const ProjectDetail = () => {
       </section>
 
       {/* ── 3D Screenshot mockup ── */}
-      <section className="px-8 sm:px-16 pb-24 sm:pb-32">
-        <BrowserMockup
-          screenshot={project.screenshot}
-          url={project.url}
-          title={project.title}
-          scrollY={scrollY}
-          reduced={reduced}
-        />
+      <section className="px-8 sm:px-16 pt-10 sm:pb-32">
+        <div className="max-w-5xl mx-auto">
+          <BrowserMockup
+            screenshot={project.screenshot}
+            url={project.url}
+            title={project.title}
+            scrollY={scrollY}
+            reduced={reduced}
+          />
+        </div>
       </section>
 
       {/* ── Description + meta ── */}
-      <section className="px-8 sm:px-16 py-16 sm:py-24">
+      <section className="px-8 sm:px-16 py-4 sm:py-6">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-16 lg:gap-24">
           {/* Long description */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          >
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
             <p className="text-xs font-mono text-muted-foreground/40 tracking-widest mb-6">
-              About this project
+              {t("projects.title.about") || "About this project"}
             </p>
             <p className="text-xl sm:text-2xl text-foreground/80 leading-relaxed">
               {t(project.longKey)}
@@ -401,52 +456,49 @@ const ProjectDetail = () => {
 
           {/* Metadata */}
           <motion.div
-            className="flex flex-col gap-8"
+            className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-8 items-baseline content-start"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div>
-              <p className="text-xs font-mono text-muted-foreground/40 tracking-widest mb-2">
-                Year
-              </p>
-              <p className="text-foreground">{project.year}</p>
-            </div>
-            <div>
-              <p className="text-xs font-mono text-muted-foreground/40 tracking-widest mb-2">
-                Type
-              </p>
-              <p className="text-foreground">{project.type}</p>
-            </div>
-            <div>
-              <p className="text-xs font-mono text-muted-foreground/40 tracking-widest mb-3">
-                Live
-              </p>
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors border border-primary/30 rounded-full px-4 py-2 hover:bg-primary/5"
-              >
-                Visit site
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            </div>
+            transition={{
+              duration: 0.8,
+              delay: 0.15,
+              ease: [0.22, 1, 0.36, 1],
+            }}>
+            <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
+              {t("projects.year.label") || "Year"}
+            </p>
+            <p className="text-foreground">{project.year}</p>
+
+            <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
+              {t("projects.type.label") || "Type"}
+            </p>
+            <p className="text-foreground">{project.type}</p>
+
+            <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
+              {t("projects.live.label") || "Live"}
+            </p>
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+              {t("projects.live.link") || "View site"}
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </motion.div>
         </div>
       </section>
 
       {/* ── Next project ── */}
       {nextProject && project.nextSlug && (
-        <section className="px-8 sm:px-16 pb-24 sm:pb-32">
+        <section className="px-4 sm:px-8 pb-24 sm:pb-32">
           <motion.div
             className="max-w-6xl mx-auto"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
+            transition={{ duration: 0.5 }}>
             <div className="h-px bg-border mb-16" />
             <NextProjectCard
               slug={project.nextSlug}

@@ -32,7 +32,8 @@ const Header = ({
         <div className="flex items-center gap-3 bg-primary/10 px-2 py-1 rounded">
           <a
             href="/"
-            className="text-sm sm:text-lg font-semibold tracking-wide text-foreground">
+            className="text-sm sm:text-lg font-semibold tracking-wide text-foreground"
+            style={{ fontFamily: 'Inter, sans-serif' }}>
             Tom Rousseau
           </a>
         </div>
