@@ -28,3 +28,6 @@ dist-ssr
 
 # Generated at build time
 public/photos.json
+
+# AI
+.claude

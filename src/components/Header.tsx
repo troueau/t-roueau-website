@@ -5,16 +5,10 @@ import { useState, useRef, useEffect } from "react";
 
 const Header = ({
   hideNav = false,
-  showProjects = false,
-  showPhotos = false,
-  showAbout = false,
 }: {
   hideNav?: boolean;
-  showProjects?: boolean;
-  showPhotos?: boolean;
-  showAbout?: boolean;
 }) => {
-  const { language, toggleLanguage, t } = useLanguage();
+  const { language, toggleLanguage } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -44,27 +38,11 @@ const Header = ({
         </div>
         {!hideNav && (
           <nav className="flex items-center gap-4 sm:gap-6 absolute right-8 sm:right-auto sm:left-1/2 -translate-x-1/2">
-            {showProjects && (
-              <a
-                href="/projects"
-                className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                {t("header.projects")}
-              </a>
-            )}
-            {showPhotos && (
-              <a
-                href="/gallery"
-                className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                {t("header.photos")}
-              </a>
-            )}
-            {showAbout && (
-              <a
-                href="/about"
-                className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                {t("header.about")}
-              </a>
-            )}
+            <a
+              href="/about"
+              className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              {t("header.about")}
+            </a>
           </nav>
         )}
         <div className="flex items-center gap-2">

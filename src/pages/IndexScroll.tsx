@@ -1,87 +1,72 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValue,
+  useSpring,
+  useReducedMotion,
+  MotionValue,
+} from "framer-motion";
+import { ExternalLink } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Arrow from "@/components/Arrow";
 import { useLanguage } from "@/hooks/useLanguage";
 import { TranslationKey } from "@/lib/i18n";
-import Footer from "@/components/Footer";
 
-const sections = [
+// ── Data ─────────────────────────────────────────────────────────────────────
+
+const projects = [
   {
-    href: "/projects",
-    titleKey: "index.projects.title" as TranslationKey,
-    descriptionKey: "index.projects.description" as TranslationKey,
-    labelKey: "index.projects.label" as TranslationKey,
-    number: "01",
+    title: "La Turcane",
+    href: "/project/la-turcane",
+    externalUrl: "https://la-turcane.fr",
+    descriptionKey: "projects.turcane.description" as TranslationKey,
+    screenshot: "https://ddrrqia38iv2z.cloudfront.net/projects/la-turcane.webp",
   },
   {
-    href: "/gallery",
-    titleKey: "index.photos.title" as TranslationKey,
-    descriptionKey: "index.photos.description" as TranslationKey,
-    labelKey: "index.photos.label" as TranslationKey,
-    number: "02",
+    title: "Flavie Herbreteau",
+    href: "/project/flavie-herbreteau",
+    externalUrl: "https://flavieherbreteau.com",
+    descriptionKey: "projects.flavie.description" as TranslationKey,
+    screenshot:
+      "https://ddrrqia38iv2z.cloudfront.net/projects/flavie-website-screenshot.webp",
   },
   {
-    href: "/about",
-    titleKey: "index.about.title" as TranslationKey,
-    descriptionKey: "index.about.description" as TranslationKey,
-    labelKey: "index.about.label" as TranslationKey,
-    number: "03",
+    title: "Poche APP",
+    href: "/project/poche",
+    externalUrl: "https://poche-app.space",
+    descriptionKey: "projects.poche.description" as TranslationKey,
+    screenshot:
+      "https://ddrrqia38iv2z.cloudfront.net/projects/poche-app.space_mobile.webp",
+  },
+  {
+    title: "Shana Herbreteau",
+    href: "/project/shana-herbreteau",
+    externalUrl: "https://shanaherbreteau.com",
+    descriptionKey: "projects.shana.description" as TranslationKey,
+    screenshot:
+      "https://ddrrqia38iv2z.cloudfront.net/projects/shana-website-screenshot.webp",
+  },
+  {
+    title: "Martin Adeline",
+    href: "/project/martin-adeline",
+    externalUrl: "https://martinadeline.com",
+    descriptionKey: "projects.martin.description" as TranslationKey,
+    screenshot:
+      "https://ddrrqia38iv2z.cloudfront.net/projects/martin-website-screenshot.webp",
+  },
+  {
+    title: "Github",
+    href: "https://github.com/troueau",
+    externalUrl: "https://github.com/troueau",
+    descriptionKey: "projects.github.description" as TranslationKey,
+    screenshot: undefined,
   },
 ];
 
-const AnimatedTitle = ({ text }: { text: string }) => {
-  return (
-    <span aria-label={text}>
-      {text.split("").map((char, i) => (
-        <motion.span
-          key={i}
-          style={{
-            display: "inline-block",
-            whiteSpace: char === " " ? "pre" : "normal",
-          }}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{
-            duration: 0.5,
-            delay: i * 0.03,
-            ease: [0.22, 1, 0.36, 1],
-          }}>
-          {char}
-        </motion.span>
-      ))}
-    </span>
-  );
-};
-
-const DotNav = ({
-  total,
-  active,
-  onDotClick,
-}: {
-  total: number;
-  active: number;
-  onDotClick: (i: number) => void;
-}) => (
-  <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex-col gap-3 hidden sm:flex">
-    {Array.from({ length: total }).map((_, i) => (
-      <button
-        key={i}
-        onClick={() => onDotClick(i)}
-        aria-label={`Section ${i + 1}`}
-        className="w-1.5 h-1.5 rounded-full transition-all duration-500 cursor-pointer"
-        style={{
-          backgroundColor:
-            i === active
-              ? "hsl(var(--foreground))"
-              : "hsl(var(--muted-foreground) / 0.3)",
-          transform: i === active ? "scale(1.6)" : "scale(1)",
-        }}
-      />
-    ))}
-  </div>
-);
+// ── Scroll progress bar ───────────────────────────────────────────────────────
 
 const ScrollProgress = () => {
   const { scrollYProgress } = useScroll();
@@ -90,142 +75,429 @@ const ScrollProgress = () => {
     damping: 30,
     restDelta: 0.001,
   });
-
   return (
     <motion.div
       className="fixed top-0 left-0 right-0 h-[2px] z-[60] origin-left"
-      style={{
-        scaleX,
-        backgroundColor: "hsl(var(--primary))",
-      }}
+      style={{ scaleX, backgroundColor: "hsl(var(--primary))" }}
     />
   );
 };
 
-const Section = ({
-  href,
-  title,
-  description,
-  label,
-  number,
-  sectionRef,
-  isLast,
-}: {
-  href: string;
+// ── 3D tilt hook ──────────────────────────────────────────────────────────────
+
+function useTilt(reduced: boolean, maxRot = 10) {
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 180, damping: 22 });
+  const sy = useSpring(my, { stiffness: 180, damping: 22 });
+  const rotateY = useTransform(
+    sx,
+    [-0.5, 0.5],
+    reduced ? [0, 0] : [-maxRot, maxRot],
+  );
+  const rotateX = useTransform(
+    sy,
+    [-0.5, 0.5],
+    reduced ? [0, 0] : [maxRot * 0.7, -maxRot * 0.7],
+  );
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (reduced) return;
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const onMouseLeave = () => {
+    mx.set(0);
+    my.set(0);
+  };
+
+  return { rotateX, rotateY, onMouseMove, onMouseLeave };
+}
+
+// ── GitHub icon ───────────────────────────────────────────────────────────────
+
+const GithubIcon = () => (
+  <svg
+    viewBox="0 0 98 96"
+    className="w-20 h-20 fill-current text-foreground/40"
+    xmlns="http://www.w3.org/2000/svg">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"
+    />
+  </svg>
+);
+
+// ── Floating 3D cards in hero ─────────────────────────────────────────────────
+// Each card is a mini project preview floating in 3D space on the right side.
+
+type FloatingCardDef = {
+  screenshot: string;
   title: string;
-  description: string;
-  label: string;
-  number: string;
-  sectionRef: (el: HTMLElement | null) => void;
-  isLast?: boolean;
+  top: string;
+  right: string;
+  rotateY: number;
+  rotateX: number;
+  scale: number;
+  floatDuration: number;
+  floatAmplitude: number;
+  delay: number;
+  parallaxFactor: number; // how much it reacts to scroll & mouse
+};
+
+const FLOATING_CARDS: FloatingCardDef[] = [
+  {
+    screenshot: projects[0].screenshot!,
+    title: projects[0].title,
+    top: "18%",
+    right: "4%",
+    rotateY: -22,
+    rotateX: 6,
+    scale: 0.72,
+    floatDuration: 5.5,
+    floatAmplitude: 14,
+    delay: 1.1,
+    parallaxFactor: 1,
+  },
+  {
+    screenshot: projects[1].screenshot!,
+    title: projects[1].title,
+    top: "38%",
+    right: "22%",
+    rotateY: -18,
+    rotateX: 3,
+    scale: 0.62,
+    floatDuration: 6.8,
+    floatAmplitude: 10,
+    delay: 1.35,
+    parallaxFactor: 1.6,
+  },
+  {
+    screenshot: projects[2].screenshot!,
+    title: projects[2].title,
+    top: "58%",
+    right: "7%",
+    rotateY: -25,
+    rotateX: 8,
+    scale: 0.55,
+    floatDuration: 7.5,
+    floatAmplitude: 16,
+    delay: 1.55,
+    parallaxFactor: 0.7,
+  },
+];
+
+// Each floating card is its own component so hooks are called at the top level.
+const SingleFloatingCard = ({
+  card,
+  smMouseX,
+  smMouseY,
+  scrollY,
+  reduced,
+}: {
+  card: FloatingCardDef;
+  smMouseX: MotionValue<number>;
+  smMouseY: MotionValue<number>;
+  scrollY: MotionValue<number>;
+  reduced: boolean;
 }) => {
+  const cardX = useTransform(
+    smMouseX,
+    [-0.5, 0.5],
+    reduced ? [0, 0] : [-20 * card.parallaxFactor, 20 * card.parallaxFactor],
+  );
+  const cardMouseY = useTransform(
+    smMouseY,
+    [-0.5, 0.5],
+    reduced ? [0, 0] : [-12 * card.parallaxFactor, 12 * card.parallaxFactor],
+  );
+  const cardScrollY = useTransform(
+    scrollY,
+    [0, 700],
+    [0, reduced ? 0 : -80 * card.parallaxFactor],
+  );
+
   return (
-    <section
-      ref={sectionRef}
-      className={`relative py-24 sm:py-32 flex items-center px-8 sm:px-16 overflow-hidden${isLast ? "" : " border-b border-border/30"}`}>
-      <motion.span
-        className="absolute right-8 sm:right-16 top-1/2 -translate-y-1/2 select-none pointer-events-none font-semibold leading-none text-[20vw] text-foreground/[0.03]"
-        initial={{ opacity: 0, x: 60 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}>
-        {number}
-      </motion.span>
-
-      <div className="w-full max-w-3xl">
-        <motion.span
-          className="block text-xs font-mono text-muted-foreground/40 tracking-widest mb-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.6, delay: 0.1 }}>
-          {number}
-        </motion.span>
-
-        <p className="text-[12vw] sm:text-[8vw] font-semibold leading-none tracking-tight text-foreground mb-8 overflow-visible">
-          <AnimatedTitle text={title} />
-        </p>
-
-        <motion.p
-          className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-md mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
-          {description}
-        </motion.p>
-
-        <motion.a
-          href={href}
-          className="group inline-flex items-center gap-3 text-sm font-medium text-primary border border-primary/30 rounded-full px-5 py-2.5 hover:bg-primary/5 transition-colors duration-300"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}>
-          {label}
-          <span className="group-hover:translate-x-1 transition-transform duration-300">
-            <Arrow />
-          </span>
-        </motion.a>
-      </div>
-    </section>
+    <motion.div
+      className="absolute"
+      style={{
+        top: card.top,
+        right: card.right,
+        x: cardX,
+        y: cardScrollY,
+        transformPerspective: 900,
+        rotateY: card.rotateY,
+        rotateX: card.rotateX,
+        scale: card.scale,
+      }}
+      initial={{ opacity: 0, y: 80 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        delay: card.delay,
+        duration: 1.1,
+        ease: [0.22, 1, 0.36, 1],
+      }}>
+      <motion.div
+        animate={{
+          y: [
+            -card.floatAmplitude / 2,
+            card.floatAmplitude / 2,
+            -card.floatAmplitude / 2,
+          ],
+          rotateZ: [-1, 1, -1],
+        }}
+        transition={{
+          duration: card.floatDuration,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}>
+        <motion.div style={{ y: cardMouseY }}>
+          <div className="w-52 rounded-xl overflow-hidden shadow-2xl border border-white/[0.06] bg-card">
+            <img
+              src={card.screenshot}
+              alt={card.title}
+              className="w-full aspect-[4/3] object-cover"
+              draggable={false}
+            />
+            <div className="px-3 py-2">
+              <span className="text-xs text-foreground/60 font-medium truncate block">
+                {card.title}
+              </span>
+            </div>
+          </div>
+          <div
+            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 rounded-full blur-xl opacity-30"
+            style={{ background: "hsl(220 70% 62% / 0.5)" }}
+          />
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 
-const IndexScroll = () => {
+const HeroFloatingCards = ({
+  scrollY,
+  smMouseX,
+  smMouseY,
+  reduced,
+}: {
+  scrollY: MotionValue<number>;
+  smMouseX: MotionValue<number>;
+  smMouseY: MotionValue<number>;
+  reduced: boolean;
+}) => {
+  const containerOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+
+  return (
+    <motion.div
+      className="absolute inset-0 pointer-events-none hidden lg:block"
+      style={{ opacity: containerOpacity }}>
+      {FLOATING_CARDS.map((card, i) => (
+        <SingleFloatingCard
+          key={i}
+          card={card}
+          smMouseX={smMouseX}
+          smMouseY={smMouseY}
+          scrollY={scrollY}
+          reduced={reduced}
+        />
+      ))}
+    </motion.div>
+  );
+};
+
+// ── Project card ──────────────────────────────────────────────────────────────
+
+const ProjectCard = ({
+  title,
+  href,
+  externalUrl,
+  description,
+  screenshot,
+  index,
+  reduced,
+}: {
+  title: string;
+  href: string;
+  externalUrl: string;
+  description: string;
+  screenshot?: string;
+  index: number;
+  reduced: boolean;
+}) => {
+  const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt(reduced, 12);
+  const fromLeft = index % 2 === 0;
+  const isExternal = href.startsWith("http");
+
+  return (
+    <div style={{ perspective: "1000px" }}>
+      <motion.div
+        initial={
+          reduced
+            ? { opacity: 0, y: 30 }
+            : {
+                opacity: 0,
+                x: fromLeft ? -90 : 90,
+                rotateY: fromLeft ? -30 : 30,
+                rotateX: 10,
+                scale: 0.88,
+              }
+        }
+        whileInView={{
+          opacity: 1,
+          x: 0,
+          rotateY: 0,
+          rotateX: 0,
+          scale: 1,
+          y: 0,
+        }}
+        viewport={{ once: true, amount: 0.12 }}
+        transition={{
+          duration: 1.0,
+          delay: (index % 3) * 0.1,
+          ease: [0.22, 1, 0.36, 1],
+        }}>
+        <div style={{ perspective: "900px" }}>
+          <motion.a
+            href={href}
+            {...(isExternal
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
+            className="group block bg-card border border-border rounded-lg overflow-hidden hover:border-primary/40 transition-colors duration-300 cursor-pointer"
+            onMouseMove={onMouseMove}
+            onMouseLeave={onMouseLeave}
+            style={{ rotateX, rotateY }}
+            whileTap={{ scale: 0.97 }}>
+            <div className="relative w-full aspect-[8/5] overflow-hidden bg-muted">
+              {screenshot ? (
+                <img
+                  src={screenshot}
+                  alt={`${title} screenshot`}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <GithubIcon />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/40 pointer-events-none" />
+            </div>
+
+            <div className="p-4 flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <span className="text-lg text-foreground leading-tight">
+                  {title}
+                </span>
+                <p className="text-sm text-muted-foreground mt-1 line-clamp-2 h-10">
+                  {description}
+                </p>
+                <p className="text-xs text-primary/60 mt-2 truncate">
+                  {externalUrl.replace("https://", "")}
+                </p>
+              </div>
+              <ExternalLink className="shrink-0 w-4 h-4 text-muted-foreground mt-1" />
+            </div>
+          </motion.a>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+// ── Hero ──────────────────────────────────────────────────────────────────────
+
+const Hero = ({
+  scrollY,
+  reduced,
+}: {
+  scrollY: MotionValue<number>;
+  reduced: boolean;
+}) => {
   const { t } = useLanguage();
-  const [activeSection, setActiveSection] = useState(-1); // -1 = hero
-  const [heroAnimationDone, setHeroAnimationDone] = useState(false);
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
-  const heroRef = useRef<HTMLElement | null>(null);
-
-  // After the initial letter-by-letter animation completes, switch to static text
-  // so language switches don't trigger the staggered animation again
-  useEffect(() => {
-    const timeout = setTimeout(() => setHeroAnimationDone(true), 1800);
-    return () => clearTimeout(timeout);
-  }, []);
+  const [charsDone, setCharsDone] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const allRefs = [heroRef.current, ...sectionRefs.current].filter(Boolean);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = allRefs.indexOf(entry.target as HTMLElement);
-            setActiveSection(index - 1); // -1 for hero, 0/1/2 for sections
-          }
-        });
-      },
-      { threshold: 0.5 },
-    );
-
-    allRefs.forEach((ref) => ref && observer.observe(ref));
-    return () => observer.disconnect();
+    const id = setTimeout(() => setCharsDone(true), 2000);
+    return () => clearTimeout(id);
   }, []);
 
-  const scrollToSection = (i: number) => {
-    const allRefs = [heroRef.current, ...sectionRefs.current];
-    allRefs[i + 1]?.scrollIntoView({ behavior: "smooth" });
+  // Three parallax layers at different speeds
+  const bgY = useTransform(scrollY, [0, 800], [0, reduced ? 0 : -220]);
+  const titleY = useTransform(scrollY, [0, 800], [0, reduced ? 0 : -130]);
+  // Title also tilts back in 3D as you scroll — like folding into the page
+  const titleRotateX = useTransform(scrollY, [0, 700], [0, reduced ? 0 : -18]);
+  const subtitleY = useTransform(scrollY, [0, 800], [0, reduced ? 0 : -60]);
+  const indicatorOpacity = useTransform(scrollY, [0, 250], [1, 0]);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smMouseX = useSpring(mouseX, { stiffness: 80, damping: 20 });
+  const smMouseY = useSpring(mouseY, { stiffness: 80, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (reduced) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    mouseX.set((e.clientX - r.left) / r.width - 0.5);
+    mouseY.set((e.clientY - r.top) / r.height - 0.5);
   };
 
   return (
-    <div className="bg-background">
-      <ScrollProgress />
-      <Header hideNav />
+    <section
+      ref={sectionRef}
+      className="relative h-screen flex flex-col justify-center px-8 sm:px-16 overflow-hidden"
+      onMouseMove={handleMouseMove}>
+      {/* ── Background parallax layer (slowest) ── */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{ y: bgY }}>
+        <div
+          className="absolute -top-48 -right-32 w-[750px] h-[750px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, hsl(220 70% 62% / 0.09) 0%, transparent 60%)",
+          }}
+        />
+        <div
+          className="absolute -bottom-24 -left-48 w-[600px] h-[600px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, hsl(220 70% 62% / 0.05) 0%, transparent 60%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(hsl(var(--foreground) / 0.025) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.025) 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+          }}
+        />
+        <div className="absolute top-1/2 right-[7%] -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-foreground/[0.04]" />
+        <div className="absolute top-1/2 right-[7%] -translate-y-1/2 w-[780px] h-[780px] rounded-full border border-foreground/[0.025]" />
+      </motion.div>
 
-      <DotNav
-        total={sections.length + 1}
-        active={activeSection + 1}
-        onDotClick={(i) => scrollToSection(i - 1)}
+      {/* ── Floating 3D project cards (large screens only) ── */}
+      <HeroFloatingCards
+        scrollY={scrollY}
+        smMouseX={smMouseX}
+        smMouseY={smMouseY}
+        reduced={reduced}
       />
 
-      <section
-        ref={heroRef}
-        className="relative h-screen flex flex-col justify-center px-8 sm:px-16 overflow-hidden">
+      {/* ── Title with scroll-linked Y + rotateX ── */}
+      <motion.div
+        style={{
+          y: titleY,
+          rotateX: titleRotateX,
+          transformPerspective: 600,
+          transformOrigin: "center bottom",
+        }}>
         <p className="text-[13vw] sm:text-[9vw] font-semibold leading-none tracking-tight text-foreground mb-8 overflow-visible">
-          {heroAnimationDone
+          {charsDone
             ? t("index.hero.title")
             : t("index.hero.title")
                 .split("")
@@ -233,6 +505,7 @@ const IndexScroll = () => {
                   <motion.span
                     key={i}
                     className="inline-block"
+                    style={{ whiteSpace: char === " " ? "pre" : "normal" }}
                     initial={{ opacity: 0, y: 60 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -244,38 +517,186 @@ const IndexScroll = () => {
                   </motion.span>
                 ))}
         </p>
+      </motion.div>
 
+      {/* ── Subtitle ── */}
+      <motion.p
+        className="text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed"
+        style={{ y: subtitleY }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+        {t("index.hero.subtitle")}
+      </motion.p>
+    </section>
+  );
+};
+
+// ── Projects section ──────────────────────────────────────────────────────────
+
+const ProjectsSection = ({ reduced }: { reduced: boolean }) => {
+  const { t } = useLanguage();
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.85", "end end"],
+  });
+  const gridY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [reduced ? 0 : 60, reduced ? 0 : -40],
+  );
+
+  return (
+    <section ref={ref} className="relative px-8 sm:px-16 py-24 sm:py-36">
+      <div className="mb-16 sm:mb-20">
+        <div className="overflow-hidden">
+          <motion.h2
+            className="text-[12vw] sm:text-[7vw] font-semibold leading-none tracking-tight text-foreground"
+            initial={{ y: "105%", opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}>
+            {t("index.projects.title")}
+          </motion.h2>
+        </div>
         <motion.p
-          className="text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-          {t("index.hero.subtitle")
-            .split(". ")
-            .map((part, i, arr) => (
-              <span key={i}>
-                {part}
-                {i < arr.length - 1 && "."}
-                {i < arr.length - 1 && <br />}
-              </span>
-            ))}
+          className="text-muted-foreground mt-5 max-w-sm leading-relaxed"
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.25 }}>
+          {t("index.projects.description")}
         </motion.p>
-      </section>
+      </div>
 
-      {sections.map((s, i) => (
-        <Section
-          key={s.href}
-          href={s.href}
-          title={t(s.titleKey)}
-          description={t(s.descriptionKey)}
-          label={t(s.labelKey)}
-          number={s.number}
-          isLast={i === sections.length - 1}
-          sectionRef={(el) => {
-            sectionRefs.current[i] = el;
-          }}
-        />
-      ))}
+      <motion.div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+        style={{ y: gridY }}>
+        {projects.map((p, i) => (
+          <ProjectCard
+            key={p.href}
+            title={p.title}
+            href={p.href}
+            externalUrl={p.externalUrl}
+            description={t(p.descriptionKey)}
+            screenshot={p.screenshot}
+            index={i}
+            reduced={reduced}
+          />
+        ))}
+      </motion.div>
+    </section>
+  );
+};
+
+// ── About section ─────────────────────────────────────────────────────────────
+
+const AboutSection = ({ reduced }: { reduced: boolean }) => {
+  const { t } = useLanguage();
+  const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt(reduced, 6);
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end end"],
+  });
+  // Section slides up from below as it enters
+  const sectionY = useTransform(
+    scrollYProgress,
+    [0, 0.6],
+    [reduced ? 0 : 80, 0],
+  );
+
+  return (
+    <section ref={ref} className="px-8 sm:px-16 pb-24 sm:pb-36">
+      <motion.div style={{ y: sectionY }}>
+        <div style={{ perspective: "1200px" }}>
+          <motion.a
+            href="/about"
+            className="group relative block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors duration-300 cursor-pointer px-10 py-16 sm:px-20 sm:py-24"
+            onMouseMove={onMouseMove}
+            onMouseLeave={onMouseLeave}
+            style={{ rotateX, rotateY }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+            {/* Background — grid */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage:
+                  "linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px)",
+                backgroundSize: "48px 48px",
+              }}
+            />
+            {/* Background — blobs */}
+            <div
+              className="absolute -bottom-24 -left-24 w-[480px] h-[480px] rounded-full pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(circle, hsl(220 70% 62% / 0.13) 0%, transparent 65%)",
+              }}
+            />
+            <div
+              className="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(circle, hsl(260 70% 65% / 0.09) 0%, transparent 65%)",
+              }}
+            />
+            {/* Background — top edge glow */}
+            <div
+              className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(90deg, transparent, hsl(220 70% 62% / 0.4), transparent)",
+              }}
+            />
+            {/* Background — hover sweep */}
+            <div
+              className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+              style={{
+                background:
+                  "radial-gradient(ellipse, hsl(220 70% 62% / 0.08) 0%, transparent 70%)",
+              }}
+            />
+
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-10">
+              <div>
+                <h2 className="text-[14vw] sm:text-[8vw] font-semibold leading-none tracking-tight text-foreground mb-6">
+                  {t("index.about.title")}
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
+                  {t("index.about.description")}
+                </p>
+              </div>
+              <span className="inline-flex shrink-0 items-center gap-3 text-base font-medium text-primary group-hover:gap-4 transition-all duration-300">
+                {t("index.about.label")}
+                <Arrow />
+              </span>
+            </div>
+          </motion.a>
+        </div>
+      </motion.div>
+    </section>
+  );
+};
+
+// ── Root ──────────────────────────────────────────────────────────────────────
+
+const IndexScroll = () => {
+  const reduced = useReducedMotion() ?? false;
+  const { scrollY } = useScroll();
+
+  return (
+    <div className="bg-background overflow-x-hidden">
+      <ScrollProgress />
+      <Header hideNav />
+
+      <Hero scrollY={scrollY} reduced={reduced} />
+      <ProjectsSection reduced={reduced} />
+      <AboutSection reduced={reduced} />
 
       <Footer />
     </div>
