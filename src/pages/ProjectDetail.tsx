@@ -137,7 +137,7 @@ const TypewriterTld = () => {
   }, [phase, displayed, tldIdx]);
 
   return (
-    <span className="text-[5vw] sm:text-[3.5vw] font-semibold leading-none tracking-tight text-foreground/30">
+    <span className="text-[4vw] sm:text-[3.5vw] font-semibold leading-none tracking-tight text-foreground/30">
       {displayed}
       {phase !== "idle" && (
         <motion.span
@@ -391,7 +391,7 @@ const ProjectDetail = () => {
         <div className="flex flex-wrap items-baseline gap-2 mb-2">
           <div className="overflow-hidden">
             <motion.h1
-              className="text-[12vw] sm:text-[8vw] font-semibold leading-none tracking-tight text-foreground"
+              className="text-[6vw] sm:text-[7vw] font-semibold leading-none tracking-tight text-foreground whitespace-nowrap"
               initial={{ y: "105%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{
@@ -456,7 +456,7 @@ const ProjectDetail = () => {
 
           {/* Metadata */}
           <motion.div
-            className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-8 items-baseline content-start"
+            className="flex flex-col gap-4 content-start"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
@@ -465,27 +465,33 @@ const ProjectDetail = () => {
               delay: 0.15,
               ease: [0.22, 1, 0.36, 1],
             }}>
-            <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
-              {t("projects.year.label") || "Year"}
-            </p>
-            <p className="text-foreground">{project.year}</p>
+            <div className="flex flex-col gap-2">
+              <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
+                {t("projects.year.label") || "Year"}
+              </p>
+              <p className="text-foreground">{project.year}</p>
+            </div>
 
-            <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
-              {t("projects.type.label") || "Type"}
-            </p>
-            <p className="text-foreground">{project.type}</p>
+            <div className="flex flex-col gap-2">
+              <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
+                {t("projects.type.label") || "Type"}
+              </p>
+              <p className="text-foreground">{project.type}</p>
+            </div>
 
-            <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
-              {t("projects.live.label") || "Live"}
-            </p>
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-              {t("projects.live.link") || "View site"}
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            <div className="flex flex-col gap-2">
+              <p className="text-xs font-mono text-muted-foreground/40 tracking-widest">
+                {t("projects.live.label") || "Live"}
+              </p>
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 font-medium text-primary hover:text-primary/80 transition-colors w-fit">
+                {t("projects.live.link") || "View site"}
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
           </motion.div>
         </div>
       </section>
