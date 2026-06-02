@@ -67,6 +67,20 @@ const projects = [
   },
 ];
 
+// ── Responsive helper ─────────────────────────────────────────────────────────
+
+function useIsMobile(query = "(max-width: 1023px)") {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, [query]);
+  return isMobile;
+}
+
 // ── Scroll progress bar ───────────────────────────────────────────────────────
 
 const ScrollProgress = () => {
@@ -146,6 +160,8 @@ type FloatingCardDef = {
   floatAmplitude: number;
   delay: number;
   parallaxFactor: number; // how much it reacts to scroll & mouse
+  // Position + scale overrides for small screens (placed around the text)
+  mobile: { top: string; right: string; scale: number };
 };
 
 const FLOATING_CARDS: FloatingCardDef[] = [
@@ -161,6 +177,7 @@ const FLOATING_CARDS: FloatingCardDef[] = [
     floatAmplitude: 14,
     delay: 1.1,
     parallaxFactor: 1,
+    mobile: { top: "9%", right: "-8%", scale: 0.5 },
   },
   {
     screenshot: projects[1].screenshot!,
@@ -174,6 +191,7 @@ const FLOATING_CARDS: FloatingCardDef[] = [
     floatAmplitude: 10,
     delay: 1.35,
     parallaxFactor: 1.6,
+    mobile: { top: "68%", right: "52%", scale: 0.42 },
   },
   {
     screenshot: projects[2].screenshot!,
@@ -187,6 +205,21 @@ const FLOATING_CARDS: FloatingCardDef[] = [
     floatAmplitude: 16,
     delay: 1.55,
     parallaxFactor: 0.7,
+    mobile: { top: "62%", right: "-10%", scale: 0.46 },
+  },
+  {
+    screenshot: projects[3].screenshot!,
+    title: projects[3].title,
+    top: "15%",
+    right: "23%",
+    rotateY: 20,
+    rotateX: 10,
+    scale: 0.53,
+    floatDuration: 7.9,
+    floatAmplitude: 16,
+    delay: 1.29,
+    parallaxFactor: 0.7,
+    mobile: { top: "13%", right: "43%", scale: 0.46 }, // not shown on mobile
   },
 ];
 
@@ -197,13 +230,16 @@ const SingleFloatingCard = ({
   smMouseY,
   scrollY,
   reduced,
+  isMobile,
 }: {
   card: FloatingCardDef;
   smMouseX: MotionValue<number>;
   smMouseY: MotionValue<number>;
   scrollY: MotionValue<number>;
   reduced: boolean;
+  isMobile: boolean;
 }) => {
+  const pos = isMobile ? card.mobile : card;
   const cardX = useTransform(
     smMouseX,
     [-0.5, 0.5],
@@ -224,14 +260,14 @@ const SingleFloatingCard = ({
     <motion.div
       className="absolute"
       style={{
-        top: card.top,
-        right: card.right,
+        top: pos.top,
+        right: pos.right,
         x: cardX,
         y: cardScrollY,
         transformPerspective: 900,
         rotateY: card.rotateY,
         rotateX: card.rotateX,
-        scale: card.scale,
+        scale: pos.scale,
       }}
       initial={{ opacity: 0, y: 80 }}
       animate={{ opacity: 1, y: 0 }}
@@ -255,7 +291,7 @@ const SingleFloatingCard = ({
           ease: "easeInOut",
         }}>
         <motion.div style={{ y: cardMouseY }}>
-          <div className="w-52 rounded-xl overflow-hidden shadow-2xl border border-white/[0.06] bg-card">
+          <div className="w-52 rounded-xl overflow-hidden shadow-2xl border border-white/[0.06] bg-card opacity-60 lg:opacity-100">
             <img
               src={card.screenshot}
               alt={card.title}
@@ -289,11 +325,12 @@ const HeroFloatingCards = ({
   smMouseY: MotionValue<number>;
   reduced: boolean;
 }) => {
+  const isMobile = useIsMobile();
   const containerOpacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   return (
     <motion.div
-      className="absolute inset-0 pointer-events-none hidden lg:block"
+      className="absolute inset-0 pointer-events-none"
       style={{ opacity: containerOpacity }}>
       {FLOATING_CARDS.map((card, i) => (
         <SingleFloatingCard
@@ -303,6 +340,7 @@ const HeroFloatingCards = ({
           smMouseY={smMouseY}
           scrollY={scrollY}
           reduced={reduced}
+          isMobile={isMobile}
         />
       ))}
     </motion.div>
@@ -591,136 +629,161 @@ const ProjectsSection = ({ reduced }: { reduced: boolean }) => {
   );
 };
 
-// ── About section ─────────────────────────────────────────────────────────────
+// ── Spotlight hook (shared by the cards below) ──────────────────────────────
 
-const AboutSection = ({ reduced }: { reduced: boolean }) => {
-  const { t } = useLanguage();
+function useSpotlight(reduced: boolean) {
   const mouseX = useMotionValue(-999);
   const mouseY = useMotionValue(-999);
   const spotlight = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, hsl(220 70% 62% / 0.11), transparent 70%)`;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const onMouseMove = (e: React.MouseEvent) => {
     if (reduced) return;
     const rect = e.currentTarget.getBoundingClientRect();
     mouseX.set(e.clientX - rect.left);
     mouseY.set(e.clientY - rect.top);
   };
-
-  const handleMouseLeave = () => {
+  const onMouseLeave = () => {
     mouseX.set(-999);
     mouseY.set(-999);
   };
 
+  return { spotlight, onMouseMove, onMouseLeave };
+}
+
+// ── Shared card background chrome (spotlight + grid + blobs + glow) ──────────
+
+const CardChrome = ({
+  spotlight,
+  accent,
+}: {
+  spotlight: MotionValue<string>;
+  accent: string;
+}) => (
+  <>
+    {/* Spotlight cursor */}
+    <motion.div
+      className="absolute inset-0 pointer-events-none"
+      style={{ background: spotlight }}
+    />
+    {/* Grid */}
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        backgroundImage:
+          "linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px)",
+        backgroundSize: "48px 48px",
+      }}
+    />
+    {/* Blobs */}
+    <div
+      className="absolute -bottom-24 -left-24 w-[380px] h-[380px] rounded-full pointer-events-none"
+      style={{
+        background:
+          "radial-gradient(circle, hsl(220 70% 62% / 0.13) 0%, transparent 65%)",
+      }}
+    />
+    <div
+      className="absolute -top-24 -right-24 w-[340px] h-[340px] rounded-full pointer-events-none"
+      style={{
+        background: `radial-gradient(circle, ${accent} 0%, transparent 65%)`,
+      }}
+    />
+    {/* Top edge glow */}
+    <div
+      className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+      style={{
+        background:
+          "linear-gradient(90deg, transparent, hsl(220 70% 62% / 0.4), transparent)",
+      }}
+    />
+  </>
+);
+
+// ── Connect section — About + Booking, side by side, same format ────────────
+
+const CARD_CLASS =
+  "group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card px-8 py-10 sm:px-10 sm:py-12 hover:border-primary/30 transition-colors duration-300 cursor-pointer";
+
+const ConnectSection = ({ reduced }: { reduced: boolean }) => {
+  const { t } = useLanguage();
+  const about = useSpotlight(reduced);
+  const booking = useSpotlight(reduced);
+
+  const enter = {
+    initial: { opacity: 0, y: 40 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.2 },
+  } as const;
+
   return (
     <section className="px-8 sm:px-16 pb-24 sm:pb-36">
-      <motion.a
-        href="/about"
-        className="group relative block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors duration-300 cursor-pointer px-8 py-12 sm:px-16 sm:py-16"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-        {/* Spotlight cursor */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: spotlight }}
-        />
-
-        {/* Background — grid */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-        {/* Background — blobs */}
-        <div
-          className="absolute -bottom-24 -left-24 w-[480px] h-[480px] rounded-full pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle, hsl(220 70% 62% / 0.13) 0%, transparent 65%)",
-          }}
-        />
-        <div
-          className="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle, hsl(260 70% 65% / 0.09) 0%, transparent 65%)",
-          }}
-        />
-        {/* Top edge glow */}
-        <div
-          className="absolute top-0 left-0 right-0 h-px pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, hsl(220 70% 62% / 0.4), transparent)",
-          }}
-        />
-
-        <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
-          <div>
-            <h2 className="text-[11vw] sm:text-[6.5vw] font-semibold leading-none tracking-tight text-foreground mb-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        {/* ── About ── */}
+        <motion.a
+          href="/about"
+          className={CARD_CLASS}
+          onMouseMove={about.onMouseMove}
+          onMouseLeave={about.onMouseLeave}
+          {...enter}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+          <CardChrome
+            spotlight={about.spotlight}
+            accent="hsl(260 70% 65% / 0.1)"
+          />
+          <div className="relative flex flex-1 flex-col">
+            <span className="text-xs font-mono text-muted-foreground/50 tracking-widest uppercase mb-6">
+              {t("index.about.eyebrow")}
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-semibold leading-none tracking-tight text-foreground mb-4">
               {t("index.about.title")}
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
               {t("index.about.description")}
             </p>
-          </div>
-          <span className="inline-flex shrink-0 items-center gap-3 text-base font-medium text-primary group-hover:gap-4 transition-all duration-300">
-            {t("index.about.label")}
-            <Arrow />
-          </span>
-        </div>
-      </motion.a>
-    </section>
-  );
-};
-
-// ── Booking section ───────────────────────────────────────────────────────────
-
-const BookingSection = () => {
-  const { t } = useLanguage();
-
-  return (
-    <section className="px-8 sm:px-16 pb-24 sm:pb-36">
-      <motion.div
-        className="border-t border-border pt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-            </span>
-            <span className="text-xs font-mono text-primary/70 tracking-widest uppercase">
-              {t("index.booking.label")}
+            <span className="mt-auto pt-10 inline-flex items-center gap-3 text-base font-medium text-primary group-hover:gap-4 transition-all duration-300">
+              {t("index.about.label")}
+              <Arrow />
             </span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground mb-2">
-            {t("index.booking.title")}
-          </h2>
-          <p className="text-muted-foreground leading-relaxed max-w-sm">
-            {t("index.booking.description")}
-          </p>
-        </div>
+        </motion.a>
+
+        {/* ── Booking ── */}
         <motion.a
           href="https://calendly.com/tomrousseau/30min"
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 inline-flex items-center gap-3 px-7 py-4 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-80 transition-opacity duration-200"
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}>
-          {t("index.booking.cta")}
-          <Arrow />
+          className={CARD_CLASS}
+          onMouseMove={booking.onMouseMove}
+          onMouseLeave={booking.onMouseLeave}
+          {...enter}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
+          <CardChrome
+            spotlight={booking.spotlight}
+            accent="hsl(150 65% 55% / 0.09)"
+          />
+          <div className="relative flex flex-1 flex-col">
+            <span className="inline-flex items-center gap-2 mb-6">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+              </span>
+              <span className="text-xs font-mono text-primary/70 tracking-widest uppercase">
+                {t("index.booking.label")}
+              </span>
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-semibold leading-none tracking-tight text-foreground mb-4">
+              {t("index.booking.title")}
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
+              {t("index.booking.description")}
+            </p>
+            <span className="mt-auto pt-10 inline-flex items-center gap-3 text-base font-medium text-primary group-hover:gap-4 transition-all duration-300">
+              {t("index.booking.cta")}
+              <Arrow />
+            </span>
+          </div>
         </motion.a>
-      </motion.div>
+      </div>
     </section>
   );
 };
@@ -738,8 +801,7 @@ const IndexScroll = () => {
 
       <Hero scrollY={scrollY} reduced={reduced} />
       <ProjectsSection reduced={reduced} />
-      <AboutSection reduced={reduced} />
-      <BookingSection />
+      <ConnectSection reduced={reduced} />
 
       <Footer />
     </div>

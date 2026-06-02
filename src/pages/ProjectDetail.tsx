@@ -318,20 +318,21 @@ const NextProjectCard = ({
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
         <motion.div
-          className="group relative rounded-2xl border border-border bg-card overflow-hidden p-8 sm:p-12 hover:border-primary/30 transition-colors duration-300 cursor-pointer"
+          className="group relative flex items-center justify-between gap-6 rounded-xl border border-border bg-card overflow-hidden px-6 py-5 sm:px-8 sm:py-6 hover:border-primary/30 transition-colors duration-300 cursor-pointer"
           onClick={handleClick}
           onMouseMove={onMouseMove}
           onMouseLeave={onMouseLeave}
           style={{ rotateX, rotateY }}>
-          <p className="text-xs font-mono text-muted-foreground/40 tracking-widest mb-4">
-            Next project
-          </p>
-          <h3 className="text-4xl sm:text-5xl font-semibold leading-none tracking-tight text-foreground mb-3">
-            {project.title}
-          </h3>
-          <p className="text-muted-foreground text-sm mb-6">{project.type}</p>
-          <span className="inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all duration-300">
-            View project
+          <div className="min-w-0">
+            <p className="text-[11px] font-mono text-muted-foreground/40 tracking-widest mb-1.5">
+              Next project
+            </p>
+            <h3 className="text-xl sm:text-2xl font-semibold leading-none tracking-tight text-foreground truncate">
+              {project.title}
+            </h3>
+          </div>
+          <span className="shrink-0 inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all duration-300">
+            <span className="hidden sm:inline">View project</span>
             <ArrowUpRight className="w-4 h-4" />
           </span>
         </motion.div>
@@ -391,7 +392,7 @@ const ProjectDetail = () => {
         <div className="flex flex-wrap items-baseline gap-2 mb-2">
           <div className="overflow-hidden">
             <motion.h1
-              className="text-[6vw] sm:text-[7vw] font-semibold leading-none tracking-tight text-foreground whitespace-nowrap"
+              className="text-[7vw] sm:text-[8vw] font-semibold leading-none tracking-tight text-foreground whitespace-nowrap"
               initial={{ y: "105%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{

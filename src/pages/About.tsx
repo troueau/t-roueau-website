@@ -229,7 +229,10 @@ const About = () => {
             {/* Label */}
             <p
               className="text-xs font-mono text-primary/70 tracking-[0.25em] uppercase mb-4"
-              style={{ animation: "name-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both" }}>
+              style={{
+                animation:
+                  "name-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both",
+              }}>
               {t("about.title")}
             </p>
 

@@ -16,6 +16,7 @@ export const translations = {
       "Side projects, experiments & things I built.",
 
     // Index — about section
+    "index.about.eyebrow": "Profile",
     "index.about.title": "About",
     "index.about.description": "A few words about who I am.",
     "index.about.label": "Learn more",
@@ -81,6 +82,7 @@ export const translations = {
     "index.projects.description": "Projets perso, expériences & créations.",
 
     // Index — about section
+    "index.about.eyebrow": "Profil",
     "index.about.title": "À propos",
     "index.about.description": "Quelques mots sur qui je suis.",
     "index.about.label": "En savoir plus",

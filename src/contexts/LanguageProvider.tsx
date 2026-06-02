@@ -4,7 +4,7 @@ import { LanguageContext } from "./languageContext";
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>(() => {
-    return (localStorage.getItem("lang") as Language) ?? "en";
+    return (localStorage.getItem("lang") as Language) ?? "fr";
   });
 
   const toggleLanguage = () => {
