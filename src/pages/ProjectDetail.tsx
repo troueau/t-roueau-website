@@ -388,7 +388,7 @@ const ProjectDetail = () => {
         </motion.div> */}
 
         {/* Title */}
-        <div className="flex items-baseline gap-2 mb-2">
+        <div className="flex flex-wrap items-baseline gap-2 mb-2">
           <div className="overflow-hidden">
             <motion.h1
               className="text-[12vw] sm:text-[8vw] font-semibold leading-none tracking-tight text-foreground"
